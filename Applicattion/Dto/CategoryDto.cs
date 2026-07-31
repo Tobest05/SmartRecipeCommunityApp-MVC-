@@ -9,6 +9,7 @@ namespace Application.Dto
     public class CreateCategoryRequestModel
     {
         public string Name { get; set; } = default!;
+
     }
 
     public class UpdateCategoryRequestModel
