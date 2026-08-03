@@ -92,8 +92,8 @@ namespace Presentation_Layer
 
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Account}/{action=Login}/{id?}");
-
+                pattern: "{controller=Home}/{action=Index}/{id?}");
+            
             app.Run();
 
         }

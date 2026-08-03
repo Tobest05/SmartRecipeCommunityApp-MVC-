@@ -1,0 +1,33 @@
+﻿@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<h2>Dashboard</h2>
+
+<hr />
+
+<h4>Welcome to Smart Recipe Community App</h4>
+
+<p>You have successfully logged in.</p>
+
+<div>
+    <a asp-controller="Category" asp-action="Index">Manage Categories</a>
+</div>
+
+<br />
+
+<div>
+    <a asp-controller="Recipe" asp-action="Index">Manage Recipes</a>
+</div>
+
+<br />
+
+<div>
+    <a asp-controller="Customer" asp-action="Profile">My Profile</a>
+</div>
+
+<br />
+
+<div>
+    <a asp-controller="Account" asp-action="Logout">Logout</a>
+</div>
