@@ -25,6 +25,7 @@ namespace Application.Dto
     }
     public class CreateRecipeCommentResponseModel
     {
+        public Guid Id { get; set; }
         public string Comment { get; set; } = default!;
     }
 

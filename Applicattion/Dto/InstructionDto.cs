@@ -13,6 +13,7 @@ namespace Application.Dto
     }
     public class CreateInstructionResponseModel
     {
+        public Guid Id { get; set; }
         public Guid RecipeId { get; set; }
         public int StepNumber { get; set; }
         public string Description { get; set; } = default!;

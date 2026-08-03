@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
-namespace Presentation_Layer.Controllers
+namespace Host.Controllers
 {
     public class AccountController : Controller
     {
@@ -17,14 +17,14 @@ namespace Presentation_Layer.Controllers
             _userService = userService;
         }
 
-        // GET: Account/Login
+       
         [HttpGet]
         public IActionResult Login()
         {
             return View();
         }
 
-        // POST: Account/Login
+        
         [HttpPost]
         public async Task<IActionResult> Login(LoginRequestModel model)
         {
@@ -61,10 +61,11 @@ namespace Presentation_Layer.Controllers
                 CookieAuthenticationDefaults.AuthenticationScheme,
                 principal);
 
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Dashboard", "Home");
         }
+        
 
-        // GET: Account/Logout
+       
         [HttpGet]
         public async Task<IActionResult> Logout()
         {

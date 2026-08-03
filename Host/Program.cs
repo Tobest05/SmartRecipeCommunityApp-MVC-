@@ -14,9 +14,6 @@ namespace Presentation_Layer
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // ===========================
-            // Database
-            // ===========================
             builder.Services.AddDbContext<SmartRecipeContext>(options =>
                 options.UseMySQL(
                     builder.Configuration.GetConnectionString("MyConnectionString")!));
@@ -34,19 +31,10 @@ namespace Presentation_Layer
     });
             builder.Services.AddSingleton(Mapster.TypeAdapterConfig.GlobalSettings);
               
-            // ===========================
-            // MVC
-            // ===========================
             builder.Services.AddControllersWithViews();
 
-            // ===========================
-            // Unit Of Work
-            // ===========================
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
-            // ===========================
-            // Repositories
-            // ===========================
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<IRoleRepository, RoleRepository>();
             builder.Services.AddScoped<IUserRoleRepository, UserRoleRepository>();
@@ -59,9 +47,6 @@ namespace Presentation_Layer
             builder.Services.AddScoped<ICommentRepository, RecipeCommentRepository>();
             builder.Services.AddScoped<IRatingRepository, RecipeRatingRepository>();
 
-            // ===========================
-            // Services
-            // ===========================
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<ICustomerService, CustomerService>();
             builder.Services.AddScoped<ICategoryService, CategoryService>();
@@ -74,9 +59,6 @@ namespace Presentation_Layer
 
             var app = builder.Build();
 
-            // ===========================
-            // Middleware
-            // ===========================
             if (!app.Environment.IsDevelopment())
             {
                 app.UseExceptionHandler("/Home/Error");
@@ -92,8 +74,8 @@ namespace Presentation_Layer
 
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Account}/{action=Login}/{id?}");
-
+                pattern: "{controller=Home}/{action=Index}/{id?}");
+            
             app.Run();
 
         }

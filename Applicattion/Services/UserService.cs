@@ -39,7 +39,7 @@ namespace Application.Services.Implementation
                 return BaseResponse<LoginResponseModel>.Failure("Invalid email or password.");
             }
 
-            // Prefer GetByUserIdAsync if available
+           
             var userRole = await _userRoleRepository.GetByIdAsync(user.Id);
 
             if (userRole == null)

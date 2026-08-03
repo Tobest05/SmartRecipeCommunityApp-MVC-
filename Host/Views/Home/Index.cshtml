@@ -1,8 +1,187 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Smart Recipe Community";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Smart Recipe Community</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="~/css/site.css" />
+</head>
+<body>
+
+    <!-- NAVBAR -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-success">
+        <div class="container">
+            <a class="navbar-brand fw-bold" asp-controller="Home" asp-action="Index">
+                🍽 Smart Recipe
+            </a>
+
+            <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarNav">
+
+                <ul class="navbar-nav ms-auto">
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="#features">Features</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="#categories">Categories</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="#contact">Contact</a>
+                    </li>
+
+                    <li class="nav-item ms-3">
+                        <a asp-controller="Account"
+                           asp-action="Login"
+                           class="btn btn-light">
+                            Login
+                        </a>
+                    </li>
+
+                </ul>
+
+            </div>
+        </div>
+    </nav><section class="bg-success text-white text-center py-5">
+
+    <div class="container">
+
+        <h1 class="display-3 fw-bold">
+            Discover Amazing Recipes
+        </h1>
+
+        <p class="lead mt-3">
+            Share your favourite recipes, explore delicious meals,
+            and cook like a professional.
+        </p>
+
+        <div class="mt-4">
+
+            <a asp-controller="Customer"
+               asp-action="Register"
+               class="btn btn-warning btn-lg me-3">
+
+                Get Started
+
+            </a>
+
+            <a asp-controller="Account"
+               asp-action="Login"
+               class="btn btn-outline-light btn-lg">
+
+                Login
+
+            </a>
+
+        </div>
+
+    </div>
+
+</section>
+
+    <!-- FEATURES -->
+    <section id="features" class="py-5">
+
+        <div class="container">
+
+            <div class="text-center mb-5">
+                <h2 class="fw-bold">Why Choose Smart Recipe?</h2>
+                <p class="text-muted">
+                    Everything you need to discover, create and share amazing recipes.
+                </p>
+            </div>
+
+            <div class="row g-4">
+
+                <div class="col-md-4">
+                    <div class="card shadow-sm border-0 h-100 text-center">
+                        <div class="card-body">
+                            <h1>🍲</h1>
+                            <h4>Create Recipes</h4>
+                            <p>
+                                Share your favourite recipes with people around the world.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="card shadow-sm border-0 h-100 text-center">
+                        <div class="card-body">
+                            <h1>❤️</h1>
+                            <h4>Favourite Recipes</h4>
+                            <p>
+                                Save recipes you love and access them anytime.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="card shadow-sm border-0 h-100 text-center">
+                        <div class="card-body">
+                            <h1>⭐</h1>
+                            <h4>Rate & Review</h4>
+                            <p>
+                                Rate recipes and leave reviews to help other cooks.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="card shadow-sm border-0 h-100 text-center">
+                        <div class="card-body">
+                            <h1>📖</h1>
+                            <h4>Step-by-Step Instructions</h4>
+                            <p>
+                                Easy cooking instructions make every recipe beginner-friendly.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="card shadow-sm border-0 h-100 text-center">
+                        <div class="card-body">
+                            <h1>🔍</h1>
+                            <h4>Search Recipes</h4>
+                            <p>
+                                Find recipes instantly by name, category or difficulty.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="card shadow-sm border-0 h-100 text-center">
+                        <div class="card-body">
+                            <h1>🥗</h1>
+                            <h4>Recipe Categories</h4>
+                            <p>
+                                Browse meals by breakfast, lunch, dinner, desserts and more.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+</body>
+</html>
