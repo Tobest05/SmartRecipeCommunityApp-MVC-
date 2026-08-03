@@ -2,6 +2,7 @@
 using Application.Interfaces.Repository;
 using Application.Interfaces.Services;
 using BCrypt.Net;
+using Domain.Entities;
 using Mapster;
 
 namespace Application.Services.Implementation
@@ -38,6 +39,7 @@ namespace Application.Services.Implementation
                 return BaseResponse<LoginResponseModel>.Failure("Invalid email or password.");
             }
 
+            // Prefer GetByUserIdAsync if available
             var userRole = await _userRoleRepository.GetByIdAsync(user.Id);
 
             if (userRole == null)
@@ -51,13 +53,13 @@ namespace Application.Services.Implementation
             {
                 return BaseResponse<LoginResponseModel>.Failure("Role not found.");
             }
+
             var response = user.Adapt<LoginResponseModel>();
+            response.Roles = new List<string> { role.Name };
 
             return BaseResponse<LoginResponseModel>.Success(
                 "Login successful.",
                 response);
         }
-
     }
-
 }

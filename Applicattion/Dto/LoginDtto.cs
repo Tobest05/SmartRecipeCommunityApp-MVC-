@@ -15,7 +15,7 @@ namespace Application.Dto
     {
         public Guid Id { get; set; }
         public string Email { get; set; } = default!;
-        public ICollection<Role> Roles { get; set; } = new List<Role>();
+        public ICollection<string> Roles { get; set; } = new List<string>();
     }
 
 

@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(SmartRecipeContext))]
-    [Migration("20260731183231_initt")]
-    partial class initt
+    [Migration("20260803095740_SeedAdmin")]
+    partial class SeedAdmin
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -286,6 +286,14 @@ namespace Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Role");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("11111111-1111-1111-1111-111111111111"),
+                            CreatedBy = new DateTime(2026, 8, 3, 9, 57, 37, 626, DateTimeKind.Utc).AddTicks(8649),
+                            Name = "Admin"
+                        });
                 });
 
             modelBuilder.Entity("Domain.Entities.User", b =>
@@ -308,6 +316,15 @@ namespace Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("User");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("22222222-2222-2222-2222-222222222222"),
+                            CreatedBy = new DateTime(2026, 8, 3, 9, 57, 38, 1, DateTimeKind.Utc).AddTicks(3707),
+                            Email = "admin@smartrecipe.com",
+                            Password = "$2a$11$uYQK7Tme3sYg4mu0oqpRcOtb.x48orMwxIrGb9.Yh7zFl3kGP2BhW"
+                        });
                 });
 
             modelBuilder.Entity("Domain.Entities.UserRole", b =>
@@ -332,6 +349,15 @@ namespace Infrastructure.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("UserRole");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("33333333-3333-3333-3333-333333333333"),
+                            CreatedBy = new DateTime(2026, 8, 3, 9, 57, 38, 2, DateTimeKind.Utc).AddTicks(1657),
+                            RoleId = new Guid("11111111-1111-1111-1111-111111111111"),
+                            UserId = new Guid("22222222-2222-2222-2222-222222222222")
+                        });
                 });
 
             modelBuilder.Entity("Domain.Entities.Customer", b =>
