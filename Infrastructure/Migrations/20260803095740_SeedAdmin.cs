@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class initt : Migration
+    public partial class SeedAdmin : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -272,6 +272,21 @@ namespace Infrastructure.Migrations
                         onDelete: ReferentialAction.Cascade);
                 })
                 .Annotation("MySQL:Charset", "utf8mb4");
+
+            migrationBuilder.InsertData(
+                table: "Role",
+                columns: new[] { "Id", "CreatedBy", "Name" },
+                values: new object[] { new Guid("11111111-1111-1111-1111-111111111111"), new DateTime(2026, 8, 3, 9, 57, 37, 626, DateTimeKind.Utc).AddTicks(8649), "Admin" });
+
+            migrationBuilder.InsertData(
+                table: "User",
+                columns: new[] { "Id", "CreatedBy", "Email", "Password" },
+                values: new object[] { new Guid("22222222-2222-2222-2222-222222222222"), new DateTime(2026, 8, 3, 9, 57, 38, 1, DateTimeKind.Utc).AddTicks(3707), "admin@smartrecipe.com", "$2a$11$uYQK7Tme3sYg4mu0oqpRcOtb.x48orMwxIrGb9.Yh7zFl3kGP2BhW" });
+
+            migrationBuilder.InsertData(
+                table: "UserRole",
+                columns: new[] { "Id", "CreatedBy", "RoleId", "UserId" },
+                values: new object[] { new Guid("33333333-3333-3333-3333-333333333333"), new DateTime(2026, 8, 3, 9, 57, 38, 2, DateTimeKind.Utc).AddTicks(1657), new Guid("11111111-1111-1111-1111-111111111111"), new Guid("22222222-2222-2222-2222-222222222222") });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Customer_UserId",
