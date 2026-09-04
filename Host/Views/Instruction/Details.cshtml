@@ -1,0 +1,63 @@
+﻿@model Application.Dto.CreateInstructionResponseModel
+
+@{
+    ViewData["Title"] = "Instruction Details";
+    Layout = "_CustomerLayout";
+}
+
+<div class="container mt-5">
+
+    <div class="card shadow">
+
+        <div class="card-header bg-info text-white">
+
+            <h3>Instruction Details</h3>
+
+        </div>
+
+        <div class="card-body">
+
+            <p>
+
+                <strong>Recipe Id:</strong>
+
+                @Model.RecipeId
+
+            </p>
+
+            <p>
+
+                <strong>Step Number:</strong>
+
+                @Model.StepNumber
+
+            </p>
+
+            <p>
+
+                <strong>Description:</strong>
+
+                @Model.Description
+
+            </p>
+
+            <a asp-action="Edit"
+               asp-route-id="@Model.Id"
+               class="btn btn-warning">
+
+                Edit
+
+            </a>
+
+            <a asp-action="Index"
+               class="btn btn-secondary">
+
+                Back
+
+            </a>
+
+        </div>
+
+    </div>
+
+</div>

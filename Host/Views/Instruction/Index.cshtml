@@ -1,0 +1,84 @@
+﻿@model ICollection<Application.Dto.CreateInstructionResponseModel>
+
+@{
+    ViewData["Title"] = "Instructions";
+    Layout = "_CustomerLayout";
+}
+
+<div class="container mt-4">
+
+    <div class="d-flex justify-content-between mb-3">
+
+        <h2>Instructions</h2>
+
+        <a asp-action="Create"
+           class="btn btn-success">
+
+            Add Instruction
+
+        </a>
+
+    </div>
+
+    <table class="table table-bordered table-hover">
+
+        <thead class="table-success">
+
+            <tr>
+
+                <th>Step Number</th>
+
+                <th>Description</th>
+
+                <th width="250">Action</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            @foreach (var instruction in Model)
+            {
+                <tr>
+
+                    <td>@instruction.StepNumber</td>
+
+                    <td>@instruction.Description</td>
+
+                    <td>
+
+                        <a asp-action="Details"
+                           asp-route-id="@instruction.Id"
+                           class="btn btn-info btn-sm">
+
+                            Details
+
+                        </a>
+
+                        <a asp-action="Edit"
+                           asp-route-id="@instruction.Id"
+                           class="btn btn-warning btn-sm">
+
+                            Edit
+
+                        </a>
+
+                        <a asp-action="Delete"
+                           asp-route-id="@instruction.Id"
+                           class="btn btn-danger btn-sm">
+
+                            Delete
+
+                        </a>
+
+                    </td>
+
+                </tr>
+            }
+
+        </tbody>
+
+    </table>
+
+</div>

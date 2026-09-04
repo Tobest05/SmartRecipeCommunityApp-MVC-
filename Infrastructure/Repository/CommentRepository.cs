@@ -14,33 +14,85 @@ public class RecipeCommentRepository : ICommentRepository
         _context = context;
     }
 
-    public async Task AddRecipeCommentAsync(RecipeComment recipeComment)
+
+    public async Task AddRecipeCommentAsync(
+        RecipeComment recipeComment)
     {
         await _context.RecipeComments.AddAsync(recipeComment);
     }
 
-    public async Task<RecipeComment?> GetRecipeCommentByIdAsync(Guid id)
+
+    public async Task<RecipeComment?> GetRecipeCommentByIdAsync(
+        Guid id)
     {
         return await _context.RecipeComments
+
             .Include(x => x.Customer)
+
             .Include(x => x.Recipe)
+
             .FirstOrDefaultAsync(x => x.Id == id);
     }
 
-    public async Task<ICollection<RecipeComment>> GetAllRecipeCommentAsync()
+
+    public async Task<ICollection<RecipeComment>>
+        GetAllRecipeCommentAsync()
     {
         return await _context.RecipeComments
+
             .Include(x => x.Customer)
+
             .Include(x => x.Recipe)
+
             .ToListAsync();
     }
 
-    public void DeleteRecipeComment(RecipeComment recipeComment)
+
+    public async Task<ICollection<RecipeComment>>
+        GetRecipeCommentByRecipeIdAsync(
+            Guid recipeId)
+    {
+        return await _context.RecipeComments
+
+            .Where(x => x.RecipeId == recipeId)
+
+            .Include(x => x.Customer)
+
+            .Include(x => x.Recipe)
+
+            .OrderByDescending(x => x.CreatedBy)
+
+            .ToListAsync();
+    }
+
+
+    public async Task<ICollection<RecipeComment>>
+        GetRecipeCommentByCustomerIdAsync(
+            Guid customerId)
+    {
+        return await _context.RecipeComments
+
+            .Where(x => x.CustomerId == customerId)
+
+            .Include(x => x.Customer)
+
+            .Include(x => x.Recipe)
+
+            .OrderByDescending(x => x.CreatedBy)
+
+            .ToListAsync();
+    }
+
+
+    public void DeleteRecipeComment(
+        RecipeComment recipeComment)
     {
         _context.RecipeComments.Remove(recipeComment);
     }
 
-    public void UpdateRecipeComment(RecipeComment recipeComment)
+
+    public void UpdateRecipeComment(
+        RecipeComment recipeComment)
     {
         _context.RecipeComments.Update(recipeComment);
     }

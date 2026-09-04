@@ -49,4 +49,10 @@ public class CustomerRepository : ICustomerRepository
     {
         _context.Customer.Update(customer);
     }
+
+    public async Task<Customer?> GetByUserIdAsync(Guid userId)
+    {
+        return await _context.Customer
+            .FirstOrDefaultAsync(x => x.UserId == userId);
+    }
 }

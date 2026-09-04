@@ -1,7 +1,8 @@
-﻿using Application.Dto;
+using Application.Dto;
 using Application.Interfaces.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace Host.Controllers
 {
@@ -9,112 +10,266 @@ namespace Host.Controllers
     public class CommentController : Controller
     {
         private readonly ICommentService _commentService;
+        private readonly ICustomerService _customerService;
 
-        public CommentController(ICommentService commentService)
+
+        public CommentController(
+            ICommentService commentService,
+            ICustomerService customerService)
         {
             _commentService = commentService;
+            _customerService = customerService;
         }
 
-       
+        [HttpGet]
         public async Task<IActionResult> Index()
         {
-            var response = await _commentService.GetAllCommentAsync();
-            return View(response.Data);
-        }
+            var customerId = await GetLoggedInCustomerId();
 
-       
-        public async Task<IActionResult> Details(Guid id)
-        {
-            var response = await _commentService.GetCommentByIdAsync(id);
+
+            if (customerId == null)
+            {
+                return RedirectToAction("Login","Account");
+            }
+
+
+            var response = await _commentService.GetCommentsByCustomerAsync(customerId.Value);
+
 
             if (!response.Status)
-                return NotFound();
+            {
+                TempData["Error"] = response.Message;
+
+                return View(new List<MyCommentViewModel>());
+            }
+
 
             return View(response.Data);
         }
 
-       
-        public IActionResult Create()
-        {
-            return View();
-        }
-
-        
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(CreateRecipeCommentRequestModel model)
         {
             if (!ModelState.IsValid)
-                return View(model);
-
-            var response = await _commentService.AddCommentAsync(model, model.CustomerId);
-
-            if (!response.Status)
             {
-                ViewBag.Message = response.Message;
-                return View(model);
+                TempData["Error"] = "Please enter a valid comment.";
+
+                return RedirectToAction( "Details","Recipe",new { id = model.RecipeId });
             }
 
-            return RedirectToAction(nameof(Index));
-        }
 
-        
-        public async Task<IActionResult> Edit(Guid id)
-        {
-            var response = await _commentService.GetCommentByIdAsync(id);
+            var customerId = await GetLoggedInCustomerId();
+
+
+            if (customerId == null)
+            {
+                return RedirectToAction( "Login","Account");
+            }
+
+
+            var response =await _commentService.AddCommentAsync(model,customerId.Value);
+
 
             if (!response.Status)
-                return NotFound();
-
-            var comment = response.Data!;
-
-            var model = new UpdateRecipeCommentRequestModel
             {
-                Id = comment.Id,
-                Comment = comment.Comment
-            };
+                TempData["Error"] = response.Message;
+            }
+            else
+            {
+                TempData["Success"] = response.Message;
+            }
+
+
+            return RedirectToAction("Details","Recipe",new { id = model.RecipeId });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Edit(Guid id)
+        {
+            var customerId = await GetLoggedInCustomerId();
+
+
+            if (customerId == null)
+            {
+                return RedirectToAction("Login","Account");
+            }
+
+
+            var response = await _commentService.GetCommentByIdAsync(id);
+
+
+            if (!response.Status ||
+                response.Data == null)
+            {
+                TempData["Error"] = response.Message;
+
+                return RedirectToAction(nameof(Index));
+            }
+
+
+            var comment = response.Data;
+
+
+
+            var currentComments = await _commentService.GetCommentsByCustomerAsync(customerId.Value);
+
+
+            if (!currentComments.Status || currentComments.Data == null || !currentComments.Data.Any(x => x.Id == id))
+            {
+                TempData["Error"] = "You can only edit your own comment.";
+
+                return RedirectToAction(nameof(Index));
+            }
+
+
+            var model =
+                new UpdateRecipeCommentRequestModel
+                {
+                    RecipeId = comment.RecipeId,
+
+                    Comment = comment.Comment
+                };
+
+
+            ViewBag.CommentId = id;
+
+            ViewBag.RecipeName =
+                comment.RecipeName;
+
 
             return View(model);
         }
 
-        
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(UpdateRecipeCommentRequestModel model)
+        public async Task<IActionResult> Edit(
+      Guid id,
+      UpdateRecipeCommentRequestModel model)
         {
-            if (!ModelState.IsValid)
-                return View(model);
+            var customerId =
+                await GetLoggedInCustomerId();
 
-            var response = await _commentService.UpdateCommentAsync(model.Id, model);
-
-            if (!response.Status)
+            if (customerId == null)
             {
-                ViewBag.Message = response.Message;
+                return RedirectToAction(
+                    "Login",
+                    "Account");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                var existingComment =
+                    await _commentService.GetCommentByIdAsync(id);
+
+                ViewBag.CommentId = id;
+
+                if (existingComment.Status &&
+                    existingComment.Data != null)
+                {
+                    ViewBag.RecipeName =
+                        existingComment.Data.RecipeName;
+                }
+
                 return View(model);
             }
 
-            return RedirectToAction(nameof(Index));
-        }
-
-        
-        public async Task<IActionResult> Delete(Guid id)
-        {
-            var response = await _commentService.GetCommentByIdAsync(id);
+            var response =
+                await _commentService.UpdateCommentAsync(
+                    id,
+                    model,
+                    customerId.Value);
 
             if (!response.Status)
-                return NotFound();
+            {
+                TempData["Error"] = response.Message;
 
-            return View(response.Data);
-        }
+                return RedirectToAction(nameof(Index));
+            }
 
-        
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(Guid id)
-        {
-            await _commentService.DeleteCommentAsync(id);
+            TempData["Success"] =
+                "Comment updated successfully.";
 
             return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Delete(
+            Guid id,
+            Guid recipeId)
+        {
+            var customerId =
+                await GetLoggedInCustomerId();
+
+
+            if (customerId == null)
+            {
+                return RedirectToAction(
+                    "Login",
+                    "Account");
+            }
+
+
+            var response =
+                await _commentService
+                    .DeleteCommentAsync(
+                        id,
+                        customerId.Value);
+
+
+            if (!response.Status)
+            {
+                TempData["Error"] =
+                    response.Message;
+            }
+            else
+            {
+                TempData["Success"] =
+                    "Comment deleted successfully.";
+            }
+
+
+            return RedirectToAction(
+                nameof(Index));
+        }
+
+        private async Task<Guid?>
+            GetLoggedInCustomerId()
+        {
+            var userIdClaim =
+                User.FindFirst(
+                    ClaimTypes.NameIdentifier);
+
+
+            if (userIdClaim == null)
+            {
+                return null;
+            }
+
+
+            if (!Guid.TryParse(
+                    userIdClaim.Value,
+                    out Guid userId))
+            {
+                return null;
+            }
+
+
+            var customerResponse =
+                await _customerService
+                    .GetCustomerByUserIdAsync(
+                        userId);
+
+
+            if (!customerResponse.Status ||
+                customerResponse.Data == null)
+            {
+                return null;
+            }
+
+
+            return customerResponse.Data.Id;
         }
     }
 }

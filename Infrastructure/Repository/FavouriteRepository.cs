@@ -24,21 +24,25 @@ public class FavouriteRecipeRepository : IFavouriteRecipeRepository
         return await _context.FavouriteRecipes
             .Include(x => x.Customer)
             .Include(x => x.Recipe)
+                .ThenInclude(x => x.Category)
             .FirstOrDefaultAsync(x => x.Id == id);
     }
 
     public async Task<bool> IsExist(Guid customerId, Guid recipeId)
     {
         return await _context.FavouriteRecipes
-            .AnyAsync(x => x.CustomerId == customerId &&
-                           x.RecipeId == recipeId);
+            .AnyAsync(x =>
+                x.CustomerId == customerId &&
+                x.RecipeId == recipeId);
     }
 
-    public async Task<ICollection<Favourite>> GetAllFavouriteRecipeAsync()
+    public async Task<ICollection<Favourite>>
+        GetFavouriteRecipeByCustomerIdAsync(Guid customerId)
     {
         return await _context.FavouriteRecipes
-            .Include(x => x.Customer)
+            .Where(x => x.CustomerId == customerId)
             .Include(x => x.Recipe)
+                .ThenInclude(x => x.Category)
             .ToListAsync();
     }
 
@@ -47,3 +51,4 @@ public class FavouriteRecipeRepository : IFavouriteRecipeRepository
         _context.FavouriteRecipes.Remove(favouriteRecipe);
     }
 }
+

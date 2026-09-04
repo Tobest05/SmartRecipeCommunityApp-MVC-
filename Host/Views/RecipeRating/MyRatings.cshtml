@@ -1,0 +1,145 @@
+﻿@using Application.Dto;
+@model ICollection<MyRatingResponseModel>
+
+@{
+    ViewData["Title"] = "My Ratings";
+}
+
+<div class="min-h-screen bg-gray-50 py-10">
+    <div class="max-w-6xl mx-auto px-6">
+        <div class="mb-8">
+            <h1 class="text-3xl font-bold text-gray-900">
+                My Ratings
+            </h1>
+
+            <p class="text-gray-500 mt-2">
+                Recipes you have rated and reviewed.
+            </p>
+        </div>
+
+        @if (TempData["Success"] != null)
+        {
+            <div class="mb-6 rounded-lg bg-green-100 px-4 py-3 text-green-700">
+                @TempData["Success"]
+            </div>
+        }
+
+        @if (TempData["Error"] != null)
+        {
+            <div class="mb-6 rounded-lg bg-red-100 px-4 py-3 text-red-700">
+                @TempData["Error"]
+            </div>
+        }
+
+        @if (Model == null || !Model.Any())
+        {
+            <div class="bg-white rounded-2xl shadow-sm p-12 text-center">
+
+                <div class="text-5xl mb-4">
+                    ⭐
+                </div>
+
+                <h2 class="text-xl font-semibold text-gray-800">
+                    No ratings yet
+                </h2>
+
+                <p class="text-gray-500 mt-2">
+                    You haven't rated any recipes yet.
+                </p>
+
+                <a asp-controller="Recipe"
+                   asp-action="Index"
+                   class="inline-block mt-6 rounded-lg bg-orange-500 px-6 py-3 text-white font-semibold hover:bg-orange-600">
+                    Discover Recipes
+                </a>
+
+            </div>
+        }
+        else
+        {
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+                @foreach (var rating in Model)
+                {
+                    <div class="bg-white rounded-2xl shadow-sm overflow-hidden hover:shadow-md transition">
+
+                        <div class="h-48 bg-gray-200">
+
+                            @if (!string.IsNullOrEmpty(rating.RecipeImageUrl))
+                            {
+                                <img src="@rating.RecipeImageUrl"
+                                     alt="@rating.RecipeName"
+                                     class="w-full h-full object-cover" />
+                            }
+                            else
+                            {
+                                <div class="w-full h-full flex items-center justify-center text-gray-400">
+                                    No Image
+                                </div>
+                            }
+
+                        </div>
+
+                        <div class="p-5">
+
+                            <h2 class="text-xl font-bold text-gray-900">
+                                @rating.RecipeName
+                            </h2>
+
+                            <div class="flex items-center gap-1 mt-3">
+
+                                @for (int i = 1; i <= 5; i++)
+                                {
+                                    if (i <= rating.Rating)
+                                    {
+                                        <span class="text-yellow-400 text-xl">
+                                            ★
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-gray-300 text-xl">
+                                            ★
+                                        </span>
+                                    }
+                                }
+
+                                <span class="ml-2 text-sm text-gray-500">
+                                    @rating.Rating/5
+                                </span>
+
+                            </div>
+
+                            @if (!string.IsNullOrWhiteSpace(rating.Review))
+                            {
+                                <div class="mt-4">
+
+                                    <p class="text-sm text-gray-500 mb-1">
+                                        Your review
+                                    </p>
+
+                                    <p class="text-gray-700">
+                                        "@rating.Review"
+                                    </p>
+
+                                </div>
+                            }
+
+                            <a asp-controller="Recipe"
+                               asp-action="Details"
+                               asp-route-id="@rating.RecipeId"
+                               class="inline-block mt-5 text-orange-500 font-semibold hover:text-orange-600">
+                                View Recipe →
+                            </a>
+
+                        </div>
+
+                    </div>
+                }
+
+            </div>
+        }
+
+    </div>
+
+</div>

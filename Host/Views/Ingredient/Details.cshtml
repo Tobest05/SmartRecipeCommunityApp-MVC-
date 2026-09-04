@@ -1,0 +1,47 @@
+﻿@model Application.Dto.CreateIngredientResponseModel
+
+@{
+    ViewData["Title"] = "Ingredient Details";
+    Layout = "_CustomerLayout";
+}
+
+<div class="container mt-5">
+
+    <div class="card shadow">
+
+        <div class="card-header bg-info text-white">
+
+            <h3>Ingredient Details</h3>
+
+        </div>
+
+        <div class="card-body">
+
+            <p><strong>Name:</strong> @Model.Name</p>
+
+            <p><strong>Quantity:</strong> @Model.Quantity</p>
+
+            <p><strong>Unit:</strong> @Model.Unit</p>
+
+            <p><strong>Recipe Id:</strong> @Model.RecipeId</p>
+
+            <a asp-action="Edit"
+               asp-route-id="@Model.Id"
+               class="btn btn-warning">
+
+                Edit
+
+            </a>
+
+            <a asp-action="Index"
+               class="btn btn-secondary">
+
+                Back
+
+            </a>
+
+        </div>
+
+    </div>
+
+</div>

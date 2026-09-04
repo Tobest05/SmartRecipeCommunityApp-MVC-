@@ -39,26 +39,31 @@ namespace Host.Controllers
             return View();
         }
 
-        
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(CreateIngredientRequestModel model)
         {
             if (!ModelState.IsValid)
-                return View(model);
+            {
+                return RedirectToAction("Details", "Recipe", new { id = model.RecipeId });
+            }
 
             var response = await _ingredientService.AddIngredientAsync(model);
 
             if (!response.Status)
             {
-                ViewBag.Message = response.Message;
-                return View(model);
+                TempData["Error"] = response.Message;
+
+                return RedirectToAction("Details","Recipe",new { id = model.RecipeId });
             }
 
-            return RedirectToAction(nameof(Index));
+            TempData["Success"] = "Ingredient added successfully.";
+
+            return RedirectToAction("Details","Recipe",new { id = model.RecipeId });
         }
 
-        
+
         public async Task<IActionResult> Edit(Guid id)
         {
             var response = await _ingredientService.GetIngredientByIdAsync(id);

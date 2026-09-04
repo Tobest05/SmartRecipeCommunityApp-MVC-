@@ -1,0 +1,55 @@
+﻿@model Application.Dto.CreateRecipeRatingResponseModel
+
+@{
+    ViewData["Title"] = "Rating Details";
+    Layout = "_CustomerLayout";
+}
+
+<div class="container mt-5">
+
+    <div class="card shadow">
+
+        <div class="card-header bg-info text-white">
+
+            <h3>Rating Details</h3>
+
+        </div>
+
+        <div class="card-body">
+
+            <p>
+
+                <strong>Rating:</strong>
+
+                @Model.Rating ⭐
+
+            </p>
+
+            <p>
+
+                <strong>Review:</strong>
+
+                @Model.Review
+
+            </p>
+
+            <a asp-action="Edit"
+               asp-route-id="@Model.Id"
+               class="btn btn-warning">
+
+                Edit
+
+            </a>
+
+            <a asp-action="Index"
+               class="btn btn-secondary">
+
+                Back
+
+            </a>
+
+        </div>
+
+    </div>
+
+</div>

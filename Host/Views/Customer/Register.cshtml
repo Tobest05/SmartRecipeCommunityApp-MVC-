@@ -1,5 +1,88 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model Application.Dto.RegisterCustomerRequest
+
 @{
+    ViewData["Title"] = "Register Customer";
 }
+
+<div class="container mt-5">
+
+    <div class="card shadow">
+
+        <div class="card-header bg-success text-white">
+
+            <h3>Register Customer</h3>
+
+        </div>
+
+        <div class="card-body">
+            
+            <div asp-validation-summary="All" class="alert alert-danger"></div> 
+            <form asp-action="Register" method="post" enctype="multipart/form-data">
+
+                <div class="mb-3">
+
+                    <label asp-for="FirstName"></label>
+
+                    <input asp-for="FirstName" class="form-control" />
+
+                </div>
+
+                <div class="mb-3">
+
+                    <label asp-for="LastName"></label>
+
+                    <input asp-for="LastName" class="form-control" />
+
+                </div>
+
+                <div class="mb-3">
+
+                    <label asp-for="Email"></label>
+
+                    <input asp-for="Email" class="form-control" />
+
+                </div>
+
+                <div class="mb-3">
+
+                    <label asp-for="Password"></label>
+
+                    <input asp-for="Password" type="password" class="form-control" />
+
+                </div>
+
+                <div class="mb-3">
+
+                    <label asp-for="ProfileImage"></label>
+
+                    <input asp-for="ProfileImage" type="file" class="form-control" />
+
+                </div>
+
+                <div class="mb-3">
+
+                    <label asp-for="Bio"></label>
+
+                    <textarea asp-for="Bio" rows="4" class="form-control"></textarea>
+
+                </div>
+
+                <button class="btn btn-success">
+
+                    Register
+
+                </button>
+
+                <a asp-action="Index" class="btn btn-secondary">
+
+                    Back
+
+                </a>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>

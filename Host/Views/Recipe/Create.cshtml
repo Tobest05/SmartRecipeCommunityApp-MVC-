@@ -1,0 +1,180 @@
+﻿@using Domain.Enum
+@model Application.Dto.CreateRecipeRequestModel
+
+@{
+    ViewData["Title"] = "Create Recipe";
+    Layout = "_CustomerLayout";
+}
+
+<div class="container mt-5">
+
+    <div class="card shadow">
+
+        <div class="card-header bg-success text-white">
+
+            <h3>Create Recipe</h3>
+
+        </div>
+
+        @if (ViewBag.Message != null)
+        {
+            <div class="alert alert-danger">
+                @ViewBag.Message
+            </div>
+        }
+
+        <div asp-validation-summary="All" class="alert alert-danger"></div>
+
+        <div class="card-body">
+
+            <form asp-action="Create" method="post" enctype="multipart/form-data">
+
+                <div class="mb-3">
+
+                    <label asp-for="CategoryId" class="form-label">
+                        Category
+                    </label>
+
+                    <select asp-for="CategoryId" class="form-select">
+
+                        <option value="">
+                            Select Category
+                        </option>
+
+                        @foreach (var category in ViewBag.Categories)
+                        {
+                            <option value="@category.Id">
+                                @category.Name
+                            </option>
+                        }
+
+                    </select>
+
+                    <span asp-validation-for="CategoryId"
+                          class="text-danger"></span>
+
+                </div>
+
+                <div class="mb-3">
+
+                    <label asp-for="Name" class="form-label"></label>
+
+                    <input asp-for="Name" class="form-control" />
+
+                    <span asp-validation-for="Name" class="text-danger"></span>
+
+                </div>
+
+                <div class="mb-3">
+
+                    <label asp-for="Description" class="form-label"></label>
+
+                    <textarea asp-for="Description"
+                              rows="5"
+                              class="form-control"></textarea>
+
+                    <span asp-validation-for="Description" class="text-danger"></span>
+
+                </div>
+
+                <div class="mb-3">
+
+                    <label asp-for="ImageUrl" class="form-label"></label>
+
+                    <input asp-for="ImageUrl" type="file" class="form-control" />
+
+                    <span asp-validation-for="ImageUrl" class="text-danger"></span>
+
+                </div>
+
+                <div class="row">
+
+                    <div class="col-md-6">
+
+                        <label asp-for="PreparationTimeMinutes" class="form-label"></label>
+
+                        <input asp-for="PreparationTimeMinutes"
+                               class="form-control" />
+
+                    </div>
+
+                    <div class="col-md-6">
+
+                        <label asp-for="CookingTimeMinutes" class="form-label"></label>
+
+                        <input asp-for="CookingTimeMinutes"
+                               class="form-control" />
+
+                    </div>
+
+                </div>
+
+                <div class="mt-3">
+
+                    <label asp-for="Servings" class="form-label"></label>
+
+                    <input asp-for="Servings"
+                           class="form-control" />
+
+                </div>
+
+                <div class="mt-3">
+
+                    <label asp-for="Difficulty" class="form-label"></label>
+
+                    <select asp-for="Difficulty"
+                            asp-items="Html.GetEnumSelectList<Difficulty>()"
+                            class="form-select">
+
+                        <option value="">Select Difficulty</option>
+
+                    </select>
+
+                </div>
+
+                <div class="mt-3">
+
+                    <label asp-for="Status" class="form-label"></label>
+
+                    <select asp-for="Status"
+                            asp-items="Html.GetEnumSelectList<RecipeStatus>()"
+                            class="form-select">
+
+                        <option value="">Select Status</option>
+
+                    </select>
+
+                </div>
+
+                <div class="mt-4">
+
+                    <button type="submit"
+                            class="btn btn-success">
+
+                        Save Recipe
+
+                    </button>
+
+                    <a asp-action="Index"
+                       class="btn btn-secondary">
+
+                        Back
+
+                    </a>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+@section Scripts
+{
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

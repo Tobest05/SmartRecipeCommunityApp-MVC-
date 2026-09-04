@@ -1,0 +1,73 @@
+﻿@model Application.Dto.CreateIngredientRequestModel
+
+@{
+    ViewData["Title"] = "Create Ingredient";
+    Layout = "_CustomerLayout";
+}
+
+<div class="container mt-5">
+
+    <div class="card shadow">
+
+        <div class="card-header bg-success text-white">
+
+            <h3>Create Ingredient</h3>
+
+        </div>
+
+        <div class="card-body">
+
+            <form asp-action="Create" method="post">
+
+                <div class="mb-3">
+
+                    <label asp-for="RecipeId"></label>
+
+                    <input asp-for="RecipeId" class="form-control" />
+
+                </div>
+
+                <div class="mb-3">
+
+                    <label asp-for="Name"></label>
+
+                    <input asp-for="Name" class="form-control" />
+
+                </div>
+
+                <div class="mb-3">
+
+                    <label asp-for="Quantity"></label>
+
+                    <input asp-for="Quantity" class="form-control" />
+
+                </div>
+
+                <div class="mb-3">
+
+                    <label asp-for="Unit"></label>
+
+                    <input asp-for="Unit" class="form-control" />
+
+                </div>
+
+                <button class="btn btn-success">
+
+                    Save
+
+                </button>
+
+                <a asp-action="Index"
+                   class="btn btn-secondary">
+
+                    Back
+
+                </a>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>

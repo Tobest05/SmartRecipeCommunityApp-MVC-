@@ -12,7 +12,7 @@ namespace Application.Interfaces.Repository
         Task<Recipe?> GetByIdAsync(Guid id);
         Task<ICollection<Recipe>> GetAllAsync();
         Task<ICollection<Recipe>> GetPublishedRecipesAsync();
-        Task<ICollection<Recipe>> GetByCustomerIdAsync(Guid customerId);
+        Task<ICollection<Recipe>> GetRecipeByCustomerIdAsync(Guid customerId);
         Task<ICollection<Recipe>> SearchByNameAsync(string name);
         Task<ICollection<Recipe>> GetByCategoryIdAsync(Guid categoryId);
         Task<ICollection<Recipe>> GetByDifficultyAsync(Difficulty difficulty);

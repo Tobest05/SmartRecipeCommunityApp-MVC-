@@ -50,6 +50,11 @@ namespace Application.Services.Implementation
                 return BaseResponse<CreateRecipeRatingResponseModel>
                     .Failure("You have already rated this recipe.");
             }
+            if(request.Rating < 1 || request.Rating > 5)
+            {
+                return BaseResponse<CreateRecipeRatingResponseModel>
+                    .Failure("Rating must be between 1 and 5.");
+            }
 
             var recipeRating = request.Adapt<RecipeRating>();
 
@@ -76,12 +81,17 @@ namespace Application.Services.Implementation
             }
 
             var recipeRating = await _recipeRatingRepository
-                .GetCustomerRatingByIdAsync(customer.Id, request.RecipeId);
+                .GetByCustomerAndRecipeAsync(customer.Id, request.RecipeId);
 
             if (recipeRating == null)
             {
                 return BaseResponse<UpdateRecipeRatingResponseModel>
                     .Failure("Rating not found.");
+            }
+            if (request.Rating < 1 || request.Rating > 5)
+            {
+                return BaseResponse<UpdateRecipeRatingResponseModel>
+                    .Failure("Rating must be between 1 and 5.");
             }
 
             recipeRating.Rating = request.Rating;
@@ -96,6 +106,22 @@ namespace Application.Services.Implementation
                 recipeRating.Adapt<UpdateRecipeRatingResponseModel>());
         }
 
+        public async Task<BaseResponse<ICollection<MyRatingResponseModel>>> GetMyRatingsAsync(Guid customerId)
+        {
+            var ratings = await _recipeRatingRepository.GetByCustomerIdAsync(customerId);
+
+            var response = ratings.Select(x => new MyRatingResponseModel
+            {
+                Id = x.Id,
+                RecipeId = x.RecipeId,
+                RecipeName = x.Recipe?.Name ?? "Unknown Recipe",
+                RecipeImageUrl = x.Recipe?.ImageUrl ?? "",
+                Rating = x.Rating,
+                Review = x.Review
+            }).ToList();
+
+            return BaseResponse<ICollection<MyRatingResponseModel>>.Success("Ratings retrieved successfully.",response);
+        }
         public async Task<BaseResponse<double>> GetAverageRatingAsync(Guid recipeId)
         {
             var average = await _recipeRatingRepository.GetAverageRatingAsync(recipeId);
@@ -116,7 +142,7 @@ namespace Application.Services.Implementation
             }
 
             var recipeRating = await _recipeRatingRepository
-                .GetCustomerRatingByIdAsync(customer.Id, recipeId);
+                .GetByCustomerAndRecipeAsync(customer.Id, recipeId);
 
             if (recipeRating == null)
             {

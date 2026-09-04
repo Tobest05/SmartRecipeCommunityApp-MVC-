@@ -11,6 +11,7 @@ namespace Domain.Entities
         public Guid CategoryId { get; set; }
         public string Name { get; set; } = default!;
         public string Description { get; set; } = default!;
+        public string CreatedBy { get; set; } = default!;
         public string ImageUrl { get; set; } = default!;
         public int PreparationTimeMinutes { get; set; }
         public int CookingTimeMinutes { get; set; }

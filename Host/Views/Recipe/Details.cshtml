@@ -1,0 +1,1128 @@
+﻿@model Application.Dto.RecipeDetailsViewModel
+
+@{
+    ViewData["Title"] = Model.Name;
+    Layout = "_CustomerLayout.cshtml";
+}
+
+<div class="container-fluid py-4">
+
+
+    <div class="mb-3">
+
+        <a asp-controller="Home"
+           asp-action="Feed"
+           class="btn btn-outline-secondary">
+
+            <i class="bi bi-arrow-left"></i>
+            Back to Feed
+
+        </a>
+
+    </div>
+
+
+    <div class="card border-0 shadow-sm overflow-hidden">
+
+        @if (!string.IsNullOrEmpty(Model.ImageUrl))
+        {
+            <img src="@Model.ImageUrl"
+                 class="img-fluid w-100"
+                 style="height:450px; object-fit:cover;"
+                 alt="@Model.Name" />
+        }
+        else
+        {
+            <div class="bg-light d-flex justify-content-center align-items-center"
+                 style="height:450px;">
+
+                <i class="bi bi-image display-1 text-muted"></i>
+
+            </div>
+        }
+
+
+        <div class="card-body p-4">
+
+            <div class="d-flex align-items-center mb-4">
+
+                <div class="bg-success text-white rounded-circle
+                    d-flex justify-content-center
+                    align-items-center me-3"
+                     style="width:45px;height:45px;">
+
+                    <i class="bi bi-person-fill"></i>
+
+                </div>
+
+                <div>
+
+                    <h6 class="mb-0 fw-bold">
+                        @Model.CustomerName
+                    </h6>
+
+                    <small class="text-muted">
+                        Recipe creator
+                    </small>
+
+                </div>
+
+            </div>
+
+
+            <div class="d-flex justify-content-between align-items-start">
+
+                <div>
+
+                    <h1 class="fw-bold">
+                        @Model.Name
+                    </h1>
+
+                    <p class="text-muted">
+                        @Model.Description
+                    </p>
+
+                </div>
+
+                <span class="badge bg-success fs-6">
+
+                    @Model.Difficulty
+
+                </span>
+
+            </div>
+
+
+            <div class="row g-3 my-4">
+
+
+                <div class="col-md-4">
+
+                    <div class="bg-light rounded p-3 text-center">
+
+                        <i class="bi bi-hourglass-split text-success fs-4"></i>
+
+                        <div class="fw-bold">
+
+                            @Model.PreparationTimeMin mins
+
+                        </div>
+
+                        <small class="text-muted">
+
+                            Preparation
+
+                        </small>
+
+                    </div>
+
+                </div>
+
+
+                <div class="col-md-4">
+
+                    <div class="bg-light rounded p-3 text-center">
+
+                        <i class="bi bi-fire text-danger fs-4"></i>
+
+                        <div class="fw-bold">
+
+                            @Model.CookingTimeMin mins
+
+                        </div>
+
+                        <small class="text-muted">
+
+                            Cooking
+
+                        </small>
+
+                    </div>
+
+                </div>
+
+
+                <div class="col-md-4">
+
+                    <div class="bg-light rounded p-3 text-center">
+
+                        <i class="bi bi-people text-primary fs-4"></i>
+
+                        <div class="fw-bold">
+
+                            @Model.Serving
+
+                        </div>
+
+                        <small class="text-muted">
+
+                            Servings
+
+                        </small>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="border-top border-bottom py-3 my-4">
+
+                <div class="d-flex align-items-center">
+
+                    <span class="fw-bold me-2">
+                        Rating:
+                    </span>
+
+                    <span class="text-warning fs-5">
+
+                        @for (int i = 1; i <= 5; i++)
+                        {
+                            if (i <= Math.Round(Model.AverageRating))
+                            {
+                                <i class="bi bi-star-fill"></i>
+                            }
+                            else
+                            {
+                                <i class="bi bi-star"></i>
+                            }
+                        }
+
+                    </span>
+
+                    <span class="ms-2 text-muted">
+
+                        (@Model.AverageRating.ToString("0.0") / 5)
+
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <div class="mt-4">
+
+                <div class="d-flex justify-content-between align-items-center mb-3">
+
+                    <h4 class="fw-bold mb-0">
+
+                        <i class="bi bi-basket text-success"></i>
+
+                        Ingredients
+
+                    </h4>
+
+
+                    <button type="button"
+                            class="btn btn-success"
+                            data-bs-toggle="modal"
+                            data-bs-target="#ingredientModal">
+
+                        <i class="bi bi-plus-lg"></i>
+
+                        Add Ingredient
+
+                    </button>
+
+                </div>
+
+
+                @if (TempData["IngredientSuccess"] != null)
+                {
+                    <div class="alert alert-success">
+
+                        <i class="bi bi-check-circle"></i>
+
+                        @TempData["IngredientSuccess"]
+
+                    </div>
+                }
+
+                @if (TempData["IngredientError"] != null)
+                {
+                    <div class="alert alert-danger">
+
+                        <i class="bi bi-exclamation-circle"></i>
+
+                        @TempData["IngredientError"]
+
+                    </div>
+                }
+
+
+                @if (Model.Ingredients != null &&
+                                 Model.Ingredients.Any())
+                {
+                    <div class="list-group">
+
+                        @foreach (var ingredient in Model.Ingredients)
+                        {
+                            <div class="list-group-item
+                                d-flex
+                                justify-content-between
+                                align-items-center">
+
+                                <span class="fw-semibold">
+
+                                    @ingredient.Name
+
+                                </span>
+
+                                <span class="text-muted">
+
+                                    @ingredient.Quantity
+                                    @ingredient.Unit
+
+                                </span>
+
+                            </div>
+                        }
+
+                    </div>
+                }
+                else
+                {
+                    <div class="alert alert-light border">
+
+                        <i class="bi bi-info-circle"></i>
+
+                        No ingredients added yet.
+
+                    </div>
+                }
+
+            </div>
+
+
+            <div class="modal fade"
+                 id="ingredientModal"
+                 tabindex="-1"
+                 aria-hidden="true">
+
+                <div class="modal-dialog">
+
+                    <div class="modal-content">
+
+                        <div class="modal-header">
+
+                            <h5 class="modal-title">
+
+                                <i class="bi bi-basket text-success"></i>
+
+                                Add Ingredient
+
+                            </h5>
+
+                            <button type="button"
+                                    class="btn-close"
+                                    data-bs-dismiss="modal">
+                            </button>
+
+                        </div>
+
+
+                        <form asp-controller="Ingredient"
+                              asp-action="Create"
+                              method="post">
+
+                            @Html.AntiForgeryToken()
+
+
+                            <div class="modal-body">
+
+                                <input type="hidden"
+                                       name="RecipeId"
+                                       value="@Model.Id" />
+
+
+                                <div class="mb-3">
+
+                                    <label class="form-label fw-semibold">
+
+                                        Ingredient Name
+
+                                    </label>
+
+                                    <input type="text"
+                                           name="Name"
+                                           class="form-control"
+                                           placeholder="e.g. Chicken"
+                                           required />
+
+                                </div>
+
+
+                                <div class="mb-3">
+
+                                    <label class="form-label fw-semibold">
+
+                                        Quantity
+
+                                    </label>
+
+                                    <input type="number"
+                                           name="Quantity"
+                                           class="form-control"
+                                           step="0.01"
+                                           min="0"
+                                           placeholder="e.g. 2"
+                                           required />
+
+                                </div>
+
+
+
+                                <div class="mb-3">
+
+                                    <label class="form-label fw-semibold">
+
+                                        Unit
+
+                                    </label>
+
+                                    <select name="Unit"
+                                            class="form-select"
+                                            required>
+
+                                        <option value="">
+                                            Select Unit
+                                        </option>
+
+                                        <option value="pieces">
+                                            Pieces
+                                        </option>
+
+                                        <option value="grams">
+                                            Grams
+                                        </option>
+
+                                        <option value="kg">
+                                            Kilograms
+                                        </option>
+
+                                        <option value="ml">
+                                            Millilitres
+                                        </option>
+
+                                        <option value="litres">
+                                            Litres
+                                        </option>
+
+                                        <option value="cups">
+                                            Cups
+                                        </option>
+
+                                        <option value="tablespoon">
+                                            Tablespoon
+                                        </option>
+
+                                        <option value="teaspoon">
+                                            Teaspoon
+                                        </option>
+
+                                        <option value="pack">
+                                            Pack
+                                        </option>
+
+                                    </select>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="modal-footer">
+
+                                <button type="button"
+                                        class="btn btn-secondary"
+                                        data-bs-dismiss="modal">
+
+                                    Cancel
+
+                                </button>
+
+                                <button type="submit"
+                                        class="btn btn-success">
+
+                                    <i class="bi bi-plus-lg"></i>
+
+                                    Add Ingredient
+
+                                </button>
+
+                            </div>
+
+                        </form>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="mt-5">
+
+                <div class="d-flex justify-content-between align-items-center mb-3">
+
+                    <h4 class="fw-bold mb-0">
+
+                        <i class="bi bi-list-ol text-success"></i>
+
+                        Instructions
+
+                    </h4>
+
+
+                    <button type="button"
+                            class="btn btn-success"
+                            data-bs-toggle="modal"
+                            data-bs-target="#instructionModal">
+
+                        <i class="bi bi-plus-lg"></i>
+
+                        Add Instruction
+
+                    </button>
+
+                </div>
+
+
+                @if (TempData["InstructionSuccess"] != null)
+                {
+                    <div class="alert alert-success">
+
+                        <i class="bi bi-check-circle"></i>
+
+                        @TempData["InstructionSuccess"]
+
+                    </div>
+                }
+
+
+                @if (TempData["InstructionError"] != null)
+                {
+                    <div class="alert alert-danger">
+
+                        <i class="bi bi-exclamation-circle"></i>
+
+                        @TempData["InstructionError"]
+
+                    </div>
+                }
+
+
+                @if (Model.Instructions != null &&
+                                 Model.Instructions.Any())
+                {
+                    <div class="list-group">
+
+                        @foreach (var instruction in
+                                 Model.Instructions.OrderBy(x => x.StepNumber))
+                        {
+                            <div class="list-group-item">
+
+                                <div class="d-flex align-items-center">
+
+                                    <span class="badge bg-success rounded-circle
+                                        d-flex
+                                        justify-content-center
+                                        align-items-center
+                                        me-3"
+                                          style="width:35px;height:35px;">
+
+                                        @instruction.StepNumber
+
+                                    </span>
+
+                                    <span>
+
+                                        @instruction.Description
+
+                                    </span>
+
+                                </div>
+
+                            </div>
+                        }
+
+                    </div>
+                }
+                else
+                {
+                    <div class="alert alert-light border">
+
+                        <i class="bi bi-info-circle"></i>
+
+                        No instructions added yet.
+
+                    </div>
+                }
+
+            </div>
+
+            <div class="modal fade"
+                 id="instructionModal"
+                 tabindex="-1"
+                 aria-hidden="true">
+
+                <div class="modal-dialog">
+
+                    <div class="modal-content">
+
+                        <div class="modal-header">
+
+                            <h5 class="modal-title">
+
+                                <i class="bi bi-list-ol text-success"></i>
+
+                                Add Instruction
+
+                            </h5>
+
+                            <button type="button"
+                                    class="btn-close"
+                                    data-bs-dismiss="modal">
+                            </button>
+
+                        </div>
+
+
+                        <form asp-controller="Instruction"
+                              asp-action="Create"
+                              method="post">
+
+                            @Html.AntiForgeryToken()
+
+
+                            <div class="modal-body">
+
+
+                                <input type="hidden"
+                                       name="RecipeId"
+                                       value="@Model.Id" />
+
+
+                                <div class="mb-3">
+
+                                    <label class="form-label fw-semibold">
+
+                                        Step Number
+
+                                    </label>
+
+                                    <input type="number"
+                                           name="StepNumber"
+                                           class="form-control"
+                                           min="1"
+                                           placeholder="e.g. 1"
+                                           required />
+
+                                </div>
+
+
+
+                                <div class="mb-3">
+
+                                    <label class="form-label fw-semibold">
+
+                                        Instruction
+
+                                    </label>
+
+                                    <textarea name="Description"
+                                              class="form-control"
+                                              rows="5"
+                                              placeholder="e.g. Wash and cut the vegetables."
+                                              required></textarea>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="modal-footer">
+
+                                <button type="button"
+                                        class="btn btn-secondary"
+                                        data-bs-dismiss="modal">
+
+                                    Cancel
+
+                                </button>
+
+                                <button type="submit"
+                                        class="btn btn-success">
+
+                                    <i class="bi bi-plus-lg"></i>
+
+                                    Add Instruction
+
+                                </button>
+
+                            </div>
+
+                        </form>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="border-top mt-5 pt-4">
+
+                <div class="d-flex align-items-center gap-3">
+
+                    <button type="button"
+                            id="likeButton"
+                            class="btn @(Model.IsLiked
+                                                    ? "btn-danger active"
+                                                    : "btn-outline-danger")"
+                            onclick="toggleLike('@Model.Id')">
+
+                        <i id="likeIcon"
+                           class="bi @(Model.IsLiked
+                                                       ? "bi-heart-fill"
+                                                       : "bi-heart")">
+                        </i>
+
+                        <span id="likeText">
+
+                            @(Model.IsLiked ? "Liked" : "Like")
+
+                        </span>
+
+                    </button>
+
+
+                    <span class="text-muted">
+
+                        <strong id="likeCount">
+
+                            @Model.LikeCount
+
+                        </strong>
+
+                        @(Model.LikeCount == 1
+                            ? "like"
+                            : "likes")
+
+                    </span>
+
+                </div>
+
+            </div>
+
+            <div class="card border-0 bg-light mt-4">
+
+                <div class="card-body">
+
+                    <h5 class="fw-bold mb-3">
+
+                        <i class="bi bi-star-fill text-warning"></i>
+
+                        Rate this recipe
+
+                    </h5>
+
+
+                    <form asp-controller="RecipeRating"
+                          asp-action="Create"
+                          method="post">
+
+                        @Html.AntiForgeryToken()
+
+
+                        <input type="hidden"
+                               name="RecipeId"
+                               value="@Model.Id" />
+
+
+                        <div class="mb-3">
+
+                            <div class="rating-stars">
+
+                                @for (int i = 1; i <= 5; i++)
+                                {
+                                    <input type="radio"
+                                           id="star-@i"
+                                           name="Rating"
+                                           value="@i"
+                                           required />
+
+                                    <label for="star-@i">
+
+                                        <i class="bi bi-star-fill"></i>
+
+                                    </label>
+                                }
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="mb-3">
+
+                            <label class="form-label fw-semibold">
+
+                                Review
+
+                            </label>
+
+                            <textarea name="Review"
+                                      class="form-control"
+                                      rows="3"
+                                      placeholder="What do you think about this recipe?"
+                                      required></textarea>
+
+                        </div>
+
+
+                        <button type="submit"
+                                class="btn btn-warning">
+
+                            <i class="bi bi-star-fill"></i>
+
+                            Submit Rating
+
+                        </button>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+            <div class="card shadow-sm border-0 mt-4">
+
+                <div class="card-header bg-white">
+
+                    <h4 class="mb-0">
+
+                        <i class="bi bi-chat-left-text"></i>
+
+                        Comments
+
+                        <span class="badge bg-secondary">
+
+                            @(Model.Comments?.Count ?? 0)
+
+                        </span>
+
+                    </h4>
+
+                </div>
+
+
+                <div class="card-body">
+
+                    @if (TempData["Success"] != null)
+                    {
+                        <div class="alert alert-success">
+
+                            @TempData["Success"]
+
+                        </div>
+                    }
+
+                    @if (TempData["Error"] != null)
+                    {
+                        <div class="alert alert-danger">
+
+                            @TempData["Error"]
+
+                        </div>
+                    }
+
+
+                
+
+                    <form asp-controller="Comment"
+                          asp-action="Create"
+                          method="post">
+
+                        @Html.AntiForgeryToken()
+
+
+                        <input type="hidden"
+                               name="RecipeId"
+                               value="@Model.Id" />
+
+
+                        <div class="mb-3">
+
+                            <label class="form-label fw-semibold">
+
+                                Leave a comment
+
+                            </label>
+
+                            <textarea name="Comment"
+                                      class="form-control"
+                                      rows="3"
+                                      placeholder="What do you think about this recipe?"
+                                      required></textarea>
+
+                        </div>
+
+
+                        <button type="submit"
+                                class="btn btn-primary">
+
+                            <i class="bi bi-send"></i>
+
+                            Post Comment
+
+                        </button>
+
+                    </form>
+
+
+                    <hr class="my-4" />
+
+
+                    @if (Model.Comments != null &&
+                                         Model.Comments.Any())
+                    {
+                        foreach (var comment in Model.Comments)
+                        {
+                            <div class="d-flex mb-4">
+
+                                <div class="me-3">
+
+                                    <div class="rounded-circle bg-primary text-white
+                                        d-flex
+                                        align-items-center
+                                        justify-content-center"
+                                         style="width:45px;height:45px;">
+
+                                        <strong>
+
+                                            @(string.IsNullOrEmpty(comment.CustomerName)
+                                                ? "?"
+                                                : comment.CustomerName
+                                                    .Substring(0, 1)
+                                                    .ToUpper())
+
+                                        </strong>
+
+                                    </div>
+
+                                </div>
+
+
+                                <div class="flex-grow-1">
+
+                                    <div class="bg-light rounded p-3">
+
+                                        <h6 class="fw-bold mb-1">
+
+                                            @comment.CustomerName
+
+                                        </h6>
+
+                                        <p class="mb-0">
+
+                                            @comment.Comment
+
+                                        </p>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <div class="text-center text-muted py-4">
+
+                            <i class="bi bi-chat-left fs-2"></i>
+
+                            <p class="mt-2 mb-0">
+
+                                No comments yet.
+
+                            </p>
+
+                            <small>
+
+                                Be the first person to comment on this recipe.
+
+                            </small>
+
+                        </div>
+                    }
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+async function toggleLike(recipeId) {
+
+const button = document.getElementById("likeButton");
+const icon = document.getElementById("likeIcon");
+const text = document.getElementById("likeText");
+const likeCount = document.getElementById("likeCount");
+
+const isLiked =
+button.classList.contains("active");
+
+const url = isLiked
+? "/RecipeLike/Unlike"
+: "/RecipeLike/Like";
+
+try {
+
+const response = await fetch(url, {
+
+method: "POST",
+
+headers: {
+"Content-Type": "application/json"
+},
+
+body: JSON.stringify({
+recipeId: recipeId
+})
+
+});
+
+
+if (!response.ok) {
+
+const message =
+await response.text();
+
+alert(message);
+
+return;
+
+}
+
+
+const result =
+await response.json();
+
+
+if (!result.status) {
+
+alert(result.message);
+
+return;
+
+}
+
+
+const data =
+result.data;
+
+
+likeCount.innerText =
+data.likeCount;
+
+
+if (data.isLiked) {
+
+button.classList.remove(
+"btn-outline-danger");
+
+button.classList.add(
+"btn-danger");
+
+button.classList.add(
+"active");
+
+
+icon.classList.remove(
+"bi-heart");
+
+icon.classList.add(
+"bi-heart-fill");
+
+
+text.innerText =
+"Liked";
+
+}
+else {
+
+button.classList.remove(
+"btn-danger");
+
+button.classList.add(
+"btn-outline-danger");
+
+button.classList.remove(
+"active");
+
+
+icon.classList.remove(
+"bi-heart-fill");
+
+icon.classList.add(
+"bi-heart");
+
+
+text.innerText =
+"Like";
+
+}
+
+}
+catch (error) {
+
+console.error(error);
+
+alert(
+"Something went wrong. Please try again.");
+
+}
+
+}
+
+</script>
+<style>
+
+.rating-stars {
+display: flex;
+flex-direction: row-reverse;
+justify-content: flex-end;
+gap: 5px;
+}
+
+
+.rating-stars input {
+display: none;
+position : absolute;
+opacity:0;
+pointer-events:none;
+}
+
+
+.rating-stars label {
+font-size: 30px;
+color: #adb5bd;
+cursor: pointer;
+}
+
+
+.rating-stars label:hover,
+.rating-stars label:hover ~ label,
+.rating-stars input:checked ~ label {
+color: #ffc107;
+}
+
+</style>

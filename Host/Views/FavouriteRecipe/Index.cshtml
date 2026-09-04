@@ -1,0 +1,217 @@
+﻿@model ICollection<Application.Dto.FavouriteRecipeViewModel>
+
+@{
+ViewData["Title"] = "Index";
+Layout = "~/Views/Shared/_CustomerLayout.cshtml";
+}
+
+<div class="container-fluid py-4">
+<div class="d-flex justify-content-between align-items-center mb-4">
+
+    <div>
+        <h2 class="fw-bold mb-1">
+            <i class="bi bi-heart-fill text-danger"></i>
+            My Favourites
+        </h2>
+
+        <p class="text-muted mb-0">
+            Recipes you saved for later.
+        </p>
+    </div>
+
+    <a asp-controller="Home"
+       asp-action="Feed"
+       class="btn btn-outline-success">
+
+        <i class="bi bi-compass"></i>
+        Discover Recipes
+
+    </a>
+
+</div>
+
+
+<!-- SUCCESS -->
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">
+        <i class="bi bi-check-circle"></i>
+        @TempData["Success"]
+    </div>
+}
+
+
+<!-- ERROR -->
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">
+        <i class="bi bi-exclamation-circle"></i>
+        @TempData["Error"]
+    </div>
+}
+
+
+<!-- NO FAVOURITES -->
+@if (Model == null || !Model.Any())
+{
+    <div class="card border-0 shadow-sm">
+
+        <div class="card-body text-center py-5">
+
+            <i class="bi bi-heart display-1 text-muted"></i>
+
+            <h4 class="fw-bold mt-3">
+                No favourite recipes yet
+            </h4>
+
+            <p class="text-muted">
+                Start exploring recipes and save the ones
+                you love.
+            </p>
+
+            <a asp-controller="Home"
+               asp-action="Feed"
+               class="btn btn-success">
+
+                <i class="bi bi-compass"></i>
+                Discover Recipes
+
+            </a>
+
+        </div>
+
+    </div>
+}
+else
+{
+    <div class="row g-4">
+
+        @foreach (var recipe in Model)
+        {
+            <div class="col-lg-4 col-md-6">
+
+                <div class="card border-0 shadow-sm h-100 overflow-hidden">
+
+                    <!-- IMAGE -->
+
+                    @if (!string.IsNullOrEmpty(recipe.ImageUrl))
+                    {
+                        <img src="@recipe.ImageUrl"
+                             class="card-img-top"
+                             style="height:220px; object-fit:cover;"
+                             alt="@recipe.RecipeName" />
+                    }
+                    else
+                    {
+                        <div class="bg-light d-flex
+                                    justify-content-center
+                                    align-items-center"
+                             style="height:220px;">
+
+                            <i class="bi bi-image display-4 text-muted"></i>
+
+                        </div>
+                    }
+
+
+                    <div class="card-body">
+
+                        <!-- CATEGORY -->
+
+                        <span class="badge bg-success mb-2">
+                            @recipe.CategoryName
+                        </span>
+
+
+                        <!-- NAME -->
+
+                        <h5 class="fw-bold">
+                            @recipe.RecipeName
+                        </h5>
+
+
+                        <!-- DESCRIPTION -->
+
+                        <p class="text-muted small">
+                            @(recipe.Description?.Length > 100
+                                ? recipe.Description.Substring(0, 100) + "..."
+                                : recipe.Description)
+                        </p>
+
+
+                        <!-- INFORMATION -->
+
+                        <div class="d-flex
+                                    justify-content-between
+                                    text-muted
+                                    small
+                                    mb-3">
+
+                            <span>
+                                <i class="bi bi-clock"></i>
+                                @(recipe.PreparationTimeMinutes +
+                                  recipe.CookingTimeMinutes) mins
+                            </span>
+
+                            <span>
+                                <i class="bi bi-people"></i>
+                                @recipe.Servings
+                            </span>
+
+                            <span>
+                                <i class="bi bi-bar-chart"></i>
+                                @recipe.Difficulty
+                            </span>
+
+                        </div>
+
+
+                        <!-- BUTTONS -->
+
+                        <div class="d-flex gap-2">
+
+                            <a asp-controller="Recipe"
+                               asp-action="Details"
+                               asp-route-id="@recipe.RecipeId"
+                               class="btn btn-success flex-grow-1">
+
+                                <i class="bi bi-eye"></i>
+                                View Recipe
+
+                            </a>
+
+
+                            <form asp-controller="FavouriteRecipe"
+                                  asp-action="Delete"
+                                  method="post">
+
+                                @Html.AntiForgeryToken()
+
+                                <input type="hidden"
+                                       name="id"
+                                       value="@recipe.Id" />
+
+                                <button type="submit"
+                                        class="btn btn-outline-danger"
+                                        title="Remove from favourites"
+                                        onclick="return confirm('Remove this recipe from your favourites?');">
+
+                                    <i class="bi bi-heart-fill"></i>
+
+                                </button>
+
+                            </form>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+        }
+
+    </div>
+}
+
+</div>

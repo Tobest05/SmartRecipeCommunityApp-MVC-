@@ -22,6 +22,10 @@ public class RecipeRepository : IRecipeRepository
             .Include(x => x.Customer)
             .Include(x => x.Ingredients)
             .Include(x => x.Instruction)
+            .Include(x => x.RecipeComment)
+                .ThenInclude(x => x.Customer)
+            .Include(x => x.RecipeRating)
+                .ThenInclude(x => x.Customer)
             .FirstOrDefaultAsync(x => x.Id == id);
     }
 
@@ -42,19 +46,23 @@ public class RecipeRepository : IRecipeRepository
             .ToListAsync();
     }
 
-    public async Task<ICollection<Recipe>> GetByCustomerIdAsync(Guid customerId)
+    public async Task<ICollection<Recipe>> GetRecipeByCustomerIdAsync(Guid customerId)
     {
         return await _context.Recipe
             .Where(x => x.CustomerId == customerId)
             .Include(x => x.Category)
+            .Include(x => x.Customer)
+            .Include(x => x.RecipeRating)
             .ToListAsync();
     }
+    
 
     public async Task<ICollection<Recipe>> SearchByNameAsync(string name)
     {
         return await _context.Recipe
             .Where(x => x.Name.Contains(name))
             .Include(x => x.Category)
+            .Include(x => x.Customer)
             .ToListAsync();
     }
 

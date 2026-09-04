@@ -33,6 +33,14 @@ public class InstructionRepository : IInstructionRepository
             .ToListAsync();
     }
 
+    public async Task<ICollection<Instruction>> GetInstructionByRecipeIdAsync(Guid recipeId)
+    {
+        return await _context.Instruction
+            .Where(x => x.RecipeId == recipeId)
+            .OrderBy(x => x.StepNumber)
+            .ToListAsync();
+    }
+
     public void DeleteInstruction(Instruction instruction)
     {
         _context.Instruction.Remove(instruction);
