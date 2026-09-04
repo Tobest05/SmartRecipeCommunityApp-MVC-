@@ -4,34 +4,62 @@
     ViewData["Title"] = "Login";
 }
 
-<h2>Login</h2>
+<div class="container d-flex justify-content-center align-items-center" style="min-height:80vh;">
 
-@if (ViewBag.Message != null)
-{
-    <div style="color:red">
-        @ViewBag.Message
+    <div class="card shadow-lg p-4" style="width:420px; border-radius:15px;">
+
+        <div class="text-center mb-4">
+            <h2 class="fw-bold">Welcome Back <i class="fa-solid fa-hand"></i></h2>
+            <p class="text-muted">Sign in to your SmartRecipe account</p>
+        </div>
+
+        @if (ViewBag.Message != null)
+        {
+            <div class="alert alert-danger">
+                @ViewBag.Message
+            </div>
+        }
+
+        <form asp-action="Login" method="post">
+
+            <div class="mb-3">
+                <label asp-for="Email" class="form-label"></label>
+                <input asp-for="Email"
+                       class="form-control"
+                       placeholder="Enter your email" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Password" class="form-label"></label>
+                <input asp-for="Password"
+                       type="password"
+                       class="form-control"
+                       placeholder="Enter your password" />
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+
+            <button type="submit" class="btn btn-success w-100">
+                Login
+            </button>
+
+        </form>
+
+        <hr />
+
+        <div class="text-center">
+            <small>
+                Don't have an account?
+                <a asp-controller="Customer"
+                   asp-action="Register">
+                    Register
+                </a>
+            </small>
+        </div>
+
     </div>
-}
 
-<form asp-action="Login" method="post">
-
-    <div class="mb-3">
-        <label asp-for="Email"></label>
-        <input asp-for="Email" class="form-control" />
-        <span asp-validation-for="Email" class="text-danger"></span>
-    </div>
-
-    <div class="mb-3">
-        <label asp-for="Password"></label>
-        <input asp-for="Password" type="password" class="form-control" />
-        <span asp-validation-for="Password" class="text-danger"></span>
-    </div>
-
-    <button type="submit" class="btn btn-primary">
-        Login
-    </button>
-
-</form>
+</div>
 
 @section Scripts {
     @{

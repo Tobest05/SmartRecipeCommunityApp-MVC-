@@ -19,15 +19,7 @@ public class RecipeRatingRepository : IRatingRepository
         await _context.RecipeRatings.AddAsync(recipeRating);
     }
 
-    public async Task<RecipeRating?> GetCustomerRatingByIdAsync(Guid customerId, Guid recipeId)
-    {
-        return await _context.RecipeRatings
-            .Include(x => x.Customer)
-            .Include(x => x.Recipe)
-            .FirstOrDefaultAsync(x =>
-                x.CustomerId == customerId &&
-                x.RecipeId == recipeId);
-    }
+    
 
     public async Task<ICollection<RecipeRating>> GetAllRecipeRatingAsync()
     {
@@ -67,5 +59,35 @@ public class RecipeRatingRepository : IRatingRepository
     public void UpdatRecipeRating(RecipeRating recipeRating)
     {
         _context.RecipeRatings.Update(recipeRating);
+    }
+
+    public async Task<double?> GetAverageCustomerRatingByIdAsync(Guid customerId)
+    {
+        var ratings = await _context.RecipeRatings
+            .Where(x => x.CustomerId == customerId)
+            .ToListAsync();
+
+        if (!ratings.Any())
+        {
+            return 0;
+        }
+
+        return ratings.Average(x => x.Rating);
+    }
+    public async Task<RecipeRating?> GetByCustomerAndRecipeAsync(Guid customerId, Guid recipeId)
+    {
+        return await _context.RecipeRatings
+            .Include(x => x.Customer)
+            .Include(x => x.Recipe)
+            .FirstOrDefaultAsync(x =>
+                x.CustomerId == customerId &&
+                x.RecipeId == recipeId);
+    }
+    public async Task<ICollection<RecipeRating>> GetByCustomerIdAsync(Guid customerId)
+    {
+        return await _context.RecipeRatings
+            .Where(x => x.CustomerId == customerId)
+            .Include(x => x.Recipe)
+            .ToListAsync();
     }
 }

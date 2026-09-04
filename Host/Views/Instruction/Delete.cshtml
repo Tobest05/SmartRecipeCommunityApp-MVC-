@@ -1,0 +1,67 @@
+﻿@model Application.Dto.CreateInstructionResponseModel
+
+@{
+    ViewData["Title"] = "Delete Instruction";
+    Layout = "_CustomerLayout";
+}
+
+<div class="container mt-5">
+
+    <div class="card border-danger shadow">
+
+        <div class="card-header bg-danger text-white">
+
+            <h3>Delete Instruction</h3>
+
+        </div>
+
+        <div class="card-body">
+
+            <h5>
+
+                Are you sure you want to delete this instruction?
+
+            </h5>
+
+            <hr />
+
+            <p>
+
+                <strong>Step:</strong>
+
+                @Model.StepNumber
+
+            </p>
+
+            <p>
+
+                <strong>Description:</strong>
+
+                @Model.Description
+
+            </p>
+
+            <form asp-action="Delete">
+
+                <input asp-for="Id" hidden />
+
+                <button class="btn btn-danger">
+
+                    Delete
+
+                </button>
+
+                <a asp-action="Index"
+                   class="btn btn-secondary">
+
+                    Cancel
+
+                </a>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>

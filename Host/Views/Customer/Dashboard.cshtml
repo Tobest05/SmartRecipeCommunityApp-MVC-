@@ -1,0 +1,223 @@
+﻿@model Application.Dto.CustomerDashboardViewModel
+
+@{
+    ViewData["Title"] = "Customer Dashboard";
+    Layout = "_CustomerLayout";
+}
+
+<div class="mb-4">
+
+    <h2 class="fw-bold">
+
+        Welcome,
+        <span class="text-success">
+            @Model.FullName
+        </span>
+
+    </h2>
+
+    <p class="text-muted">
+
+        Manage your recipes and track your cooking journey.
+
+    </p>
+
+</div>
+
+<div class="row g-4 mb-5">
+
+    <div class="col-lg-3 col-md-6">
+
+        <div class="card border-0 shadow bg-success text-white">
+
+            <div class="card-body d-flex justify-content-between align-items-center">
+
+                <div>
+
+                    <h6>Total Recipes</h6>
+
+                    <h2>@Model.TotalRecipes</h2>
+
+                </div>
+
+                <i class="bi bi-journal-richtext display-5"></i>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="col-lg-3 col-md-6">
+
+        <div class="card border-0 shadow bg-danger text-white">
+
+            <div class="card-body d-flex justify-content-between align-items-center">
+
+                <div>
+
+                    <h6>Favourites</h6>
+
+                    <h2>@Model.TotalFavourites</h2>
+
+                </div>
+
+                <i class="bi bi-heart-fill display-5"></i>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="col-lg-3 col-md-6">
+
+        <div class="card border-0 shadow bg-primary text-white">
+
+            <div class="card-body d-flex justify-content-between align-items-center">
+
+                <div>
+
+                    <h6>Comments</h6>
+
+                    <h2>@Model.TotalComments</h2>
+
+                </div>
+
+                <i class="bi bi-chat-left-text-fill display-5"></i>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="col-lg-3 col-md-6">
+
+        <div class="card border-0 shadow bg-warning text-dark">
+
+            <div class="card-body d-flex justify-content-between align-items-center">
+
+                <div>
+
+                    <h6>Average Rating</h6>
+
+                    <h2>@Model.AverageRating.ToString("0.0")</h2>
+
+                </div>
+
+                <i class="bi bi-star-fill display-5"></i>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+
+    <h3 class="fw-bold">
+
+        Recent Recipes
+
+    </h3>
+
+    <a asp-controller="Recipe"
+       asp-action="Create"
+       class="btn btn-success">
+
+        <i class="bi bi-plus-circle"></i>
+
+        Create Recipe
+
+    </a>
+
+</div>
+
+@if (Model.RecentRecipes.Any())
+{
+    <div class="row">
+
+        @foreach (var recipe in Model.RecentRecipes)
+        {
+            <div class="col-lg-4 col-md-6 mb-4">
+
+                <div class="card border-0 shadow h-100">
+
+                    <img src="@recipe.ImageUrl"
+                         class="card-img-top"
+                         style="height:220px;object-fit:cover;" />
+
+                    <div class="card-body">
+
+                        <h5 class="fw-bold">
+
+                            @recipe.Name
+
+                        </h5>
+
+                        <p class="text-muted">
+
+                            @recipe.Description
+
+                        </p>
+
+                        <span class="badge bg-primary">
+
+                            @recipe.Difficulty
+
+                        </span>
+
+                        <span class="badge bg-success">
+
+                            @recipe.Status
+
+                        </span>
+
+                    </div>
+
+                    <div class="card-footer bg-white border-0">
+
+                        <a asp-controller="Recipe"
+                           asp-action="Details"
+                           asp-route-id="@recipe.Id"
+                           class="btn btn-outline-success btn-sm">
+
+                            <i class="bi bi-eye"></i>
+
+                            View
+
+                        </a>
+
+                        <a asp-controller="Recipe"
+                           asp-action="Edit"
+                           asp-route-id="@recipe.Id"
+                           class="btn btn-outline-warning btn-sm">
+
+                            <i class="bi bi-pencil-square"></i>
+
+                            Edit
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+        }
+
+    </div>
+}
+else
+{
+    <div class="alert alert-info">
+
+        <i class="bi bi-info-circle"></i>
+
+        You haven't created any recipes yet.
+
+    </div>
+}

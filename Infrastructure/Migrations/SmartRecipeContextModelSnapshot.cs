@@ -25,8 +25,12 @@ namespace Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("char(36)");
 
-                    b.Property<DateTime>("CreatedBy")
+                    b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime(6)");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("longtext");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -47,7 +51,7 @@ namespace Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<DateTime>("CreatedBy")
+                    b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("Email")
@@ -83,7 +87,7 @@ namespace Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("char(36)");
 
-                    b.Property<DateTime>("CreatedBy")
+                    b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime(6)");
 
                     b.Property<Guid>("CustomerId")
@@ -107,7 +111,7 @@ namespace Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("char(36)");
 
-                    b.Property<DateTime>("CreatedBy")
+                    b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("Name")
@@ -137,7 +141,7 @@ namespace Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("char(36)");
 
-                    b.Property<DateTime>("CreatedBy")
+                    b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("Description")
@@ -169,8 +173,12 @@ namespace Infrastructure.Migrations
                     b.Property<int>("CookingTimeMinutes")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("CreatedBy")
+                    b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime(6)");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("longtext");
 
                     b.Property<Guid>("CustomerId")
                         .HasColumnType("char(36)");
@@ -218,8 +226,12 @@ namespace Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<DateTime>("CreatedBy")
+                    b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime(6)");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("longtext");
 
                     b.Property<Guid>("CustomerId")
                         .HasColumnType("char(36)");
@@ -236,13 +248,37 @@ namespace Infrastructure.Migrations
                     b.ToTable("RecipeComments");
                 });
 
+            modelBuilder.Entity("Domain.Entities.RecipeLike", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<Guid>("CustomerId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<Guid>("RecipeId")
+                        .HasColumnType("char(36)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CustomerId");
+
+                    b.HasIndex("RecipeId");
+
+                    b.ToTable("RecipeLikes");
+                });
+
             modelBuilder.Entity("Domain.Entities.RecipeRating", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("char(36)");
 
-                    b.Property<DateTime>("CreatedBy")
+                    b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime(6)");
 
                     b.Property<Guid>("CustomerId")
@@ -273,7 +309,7 @@ namespace Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("char(36)");
 
-                    b.Property<DateTime>("CreatedBy")
+                    b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("Name")
@@ -288,8 +324,14 @@ namespace Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("11111111-1111-1111-1111-111111111111"),
-                            CreatedBy = new DateTime(2026, 8, 3, 9, 57, 37, 626, DateTimeKind.Utc).AddTicks(8649),
+                            CreatedAt = new DateTime(2026, 8, 11, 12, 46, 20, 170, DateTimeKind.Utc).AddTicks(9631),
                             Name = "Admin"
+                        },
+                        new
+                        {
+                            Id = new Guid("44444444-4444-4444-4444-444444444444"),
+                            CreatedAt = new DateTime(2026, 8, 11, 12, 46, 20, 171, DateTimeKind.Utc).AddTicks(190),
+                            Name = "Customer"
                         });
                 });
 
@@ -299,7 +341,7 @@ namespace Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("char(36)");
 
-                    b.Property<DateTime>("CreatedBy")
+                    b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("Email")
@@ -318,9 +360,9 @@ namespace Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("22222222-2222-2222-2222-222222222222"),
-                            CreatedBy = new DateTime(2026, 8, 3, 9, 57, 38, 1, DateTimeKind.Utc).AddTicks(3707),
+                            CreatedAt = new DateTime(2026, 8, 11, 12, 46, 20, 508, DateTimeKind.Utc).AddTicks(4038),
                             Email = "admin@smartrecipe.com",
-                            Password = "$2a$11$uYQK7Tme3sYg4mu0oqpRcOtb.x48orMwxIrGb9.Yh7zFl3kGP2BhW"
+                            Password = "$2a$11$jJSG0ot36TefByB.yk2Nn.i46MvuIl85TksbFeDxywMG10ghJD2k."
                         });
                 });
 
@@ -330,7 +372,7 @@ namespace Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("char(36)");
 
-                    b.Property<DateTime>("CreatedBy")
+                    b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime(6)");
 
                     b.Property<Guid>("RoleId")
@@ -351,7 +393,7 @@ namespace Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("33333333-3333-3333-3333-333333333333"),
-                            CreatedBy = new DateTime(2026, 8, 3, 9, 57, 38, 2, DateTimeKind.Utc).AddTicks(1657),
+                            CreatedAt = new DateTime(2026, 8, 11, 12, 46, 20, 508, DateTimeKind.Utc).AddTicks(7463),
                             RoleId = new Guid("11111111-1111-1111-1111-111111111111"),
                             UserId = new Guid("22222222-2222-2222-2222-222222222222")
                         });
@@ -438,6 +480,25 @@ namespace Infrastructure.Migrations
 
                     b.HasOne("Domain.Entities.Recipe", "Recipe")
                         .WithMany("RecipeComment")
+                        .HasForeignKey("RecipeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Customer");
+
+                    b.Navigation("Recipe");
+                });
+
+            modelBuilder.Entity("Domain.Entities.RecipeLike", b =>
+                {
+                    b.HasOne("Domain.Entities.Customer", "Customer")
+                        .WithMany()
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Entities.Recipe", "Recipe")
+                        .WithMany()
                         .HasForeignKey("RecipeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();

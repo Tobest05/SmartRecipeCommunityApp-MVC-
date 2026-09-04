@@ -7,6 +7,7 @@ namespace Domain.Entities
     public class Category : BaseEntity
     {
         public string Name { get; set; } = default!;
+        public string CreatedBy { get; set; } = default!;
         public ICollection<Recipe> Recipes { get; set; } = new List<Recipe>();
 
     }

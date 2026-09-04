@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Host.Controllers
 {
@@ -17,14 +18,14 @@ namespace Host.Controllers
             _userService = userService;
         }
 
-       
+        [AllowAnonymous]
         [HttpGet]
         public IActionResult Login()
         {
             return View();
         }
 
-        
+        [AllowAnonymous]
         [HttpPost]
         public async Task<IActionResult> Login(LoginRequestModel model)
         {
@@ -42,35 +43,40 @@ namespace Host.Controllers
             }
 
             var claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.NameIdentifier, response.Data!.Id.ToString())
-            };
+        {
+            new Claim( ClaimTypes.NameIdentifier,response.Data!.Id.ToString())
+        };
 
-            foreach (var role in response.Data.Roles)  
+            foreach (var role in response.Data.Roles)
             {
-                claims.Add(new Claim(ClaimTypes.Role,role));
+                claims.Add(new Claim(ClaimTypes.Role, role));
             }
 
-            var identity = new ClaimsIdentity(
-                claims,
-                CookieAuthenticationDefaults.AuthenticationScheme);
+            var identity = new ClaimsIdentity(claims,CookieAuthenticationDefaults.AuthenticationScheme);
 
             var principal = new ClaimsPrincipal(identity);
 
-            await HttpContext.SignInAsync(
-                CookieAuthenticationDefaults.AuthenticationScheme,
-                principal);
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,principal);
 
-            return RedirectToAction("Dashboard", "Home");
+            
+            if (response.Data.Roles.Contains("Admin"))
+            {
+                return RedirectToAction("Dashboard", "Admin");
+            }
+
+            
+            if (response.Data.Roles.Contains("Customer"))
+            {
+                return RedirectToAction("Feed", "Home");
+            }
+
+            return RedirectToAction("Login");
         }
-        
 
-       
         [HttpGet]
         public async Task<IActionResult> Logout()
         {
-            await HttpContext.SignOutAsync(
-                CookieAuthenticationDefaults.AuthenticationScheme);
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 
             return RedirectToAction("Login");
         }

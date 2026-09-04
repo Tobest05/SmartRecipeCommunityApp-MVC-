@@ -1,0 +1,85 @@
+﻿@model ICollection<Application.Dto.CreateIngredientResponseModel>
+
+@{
+    ViewData["Title"] = "Ingredients";
+    Layout = "_CustomerLayout";
+}
+
+<div class="container mt-4">
+
+    <div class="d-flex justify-content-between mb-3">
+
+        <h2>Ingredients</h2>
+
+        <a asp-action="Create"
+           class="btn btn-success">
+
+            Add Ingredient
+
+        </a>
+
+    </div>
+
+    <table class="table table-bordered table-hover">
+
+        <thead class="table-success">
+
+            <tr>
+
+                <th>Name</th>
+                <th>Quantity</th>
+                <th>Unit</th>
+                <th width="250">Action</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            @foreach (var ingredient in Model)
+            {
+                <tr>
+
+                    <td>@ingredient.Name</td>
+
+                    <td>@ingredient.Quantity</td>
+
+                    <td>@ingredient.Unit</td>
+
+                    <td>
+
+                        <a asp-action="Details"
+                           asp-route-id="@ingredient.Id"
+                           class="btn btn-info btn-sm">
+
+                            Details
+
+                        </a>
+
+                        <a asp-action="Edit"
+                           asp-route-id="@ingredient.Id"
+                           class="btn btn-warning btn-sm">
+
+                            Edit
+
+                        </a>
+
+                        <a asp-action="Delete"
+                           asp-route-id="@ingredient.Id"
+                           class="btn btn-danger btn-sm">
+
+                            Delete
+
+                        </a>
+
+                    </td>
+
+                </tr>
+            }
+
+        </tbody>
+
+    </table>
+
+</div>

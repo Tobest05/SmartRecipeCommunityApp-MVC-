@@ -9,6 +9,7 @@ namespace Domain.Entities
         public Guid CustomerId { get; set; }
         public Guid RecipeId { get; set; }
         public string Comment { get; set; } = default!;
+        public string CreatedBy { get; set; } = default!;
         public Customer Customer { get; set; } = null!;
         public Recipe Recipe { get; set; } = null!;
     }

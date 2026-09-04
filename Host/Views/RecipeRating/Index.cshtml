@@ -1,0 +1,84 @@
+﻿@model ICollection<Application.Dto.CreateRecipeRatingResponseModel>
+
+@{
+    ViewData["Title"] = "Ratings";
+    Layout = "_CustomerLayout";
+}
+
+<div class="container mt-4">
+
+    <div class="d-flex justify-content-between mb-3">
+
+        <h2>Recipe Ratings</h2>
+
+        <a asp-action="Create"
+           class="btn btn-success">
+
+            Add Rating
+
+        </a>
+
+    </div>
+
+    <table class="table table-bordered table-hover">
+
+        <thead class="table-success">
+
+            <tr>
+
+                <th>Rating</th>
+
+                <th>Review</th>
+
+                <th width="250">Action</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            @foreach (var rating in Model)
+            {
+                <tr>
+
+                    <td>@rating.Rating</td>
+
+                    <td>@rating.Review</td>
+
+                    <td>
+
+                        <a asp-action="Details"
+                           asp-route-id="@rating.Id"
+                           class="btn btn-info btn-sm">
+
+                            Details
+
+                        </a>
+
+                        <a asp-action="Edit"
+                           asp-route-id="@rating.Id"
+                           class="btn btn-warning btn-sm">
+
+                            Edit
+
+                        </a>
+
+                        <a asp-action="Delete"
+                           asp-route-id="@rating.Id"
+                           class="btn btn-danger btn-sm">
+
+                            Delete
+
+                        </a>
+
+                    </td>
+
+                </tr>
+            }
+
+        </tbody>
+
+    </table>
+
+</div>

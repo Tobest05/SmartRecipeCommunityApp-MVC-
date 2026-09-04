@@ -1,0 +1,151 @@
+﻿@model ICollection<Application.Dto.CreateRecipeResponseModel>
+
+@{
+    ViewData["Title"] = "Recipes";
+    Layout = "_CustomerLayout";
+}
+
+<div class="container mt-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <h2>Recipes</h2>
+
+        <a asp-action="Create"
+           class="btn btn-success">
+
+            Create Recipe
+
+        </a>
+
+    </div>
+
+    <table class="table table-bordered table-hover table-striped">
+
+        <thead class="table-dark">
+
+            <tr>
+
+                <th>Image</th>
+
+                <th>Name</th>
+
+                <th>Preparation</th>
+
+                <th>Cooking</th>
+
+                <th>Serving</th>
+
+                <th>Difficulty</th>
+
+                <th>Status</th>
+
+                <th width="260">Actions</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            @if (Model != null && Model.Any())
+            {
+                foreach (var recipe in Model)
+                {
+                    <tr>
+
+                        <td>
+
+                            <img src="@recipe.ImageUrl"
+                                 width="80"
+                                 height="80"
+                                 class="rounded" />
+
+                        </td>
+
+                        <td>
+
+                            @recipe.Name
+
+                        </td>
+
+                        <td>
+
+                            @recipe.PreparationTimeMinutes mins
+
+                        </td>
+
+                        <td>
+
+                            @recipe.CookingTimeMinutes mins
+
+                        </td>
+
+                        <td>
+
+                            @recipe.Servings
+
+                        </td>
+
+                        <td>
+
+                            @recipe.Difficulty
+
+                        </td>
+
+                        <td>
+
+                            @recipe.Status
+
+                        </td>
+
+                        <td>
+
+                            <a asp-action="Details"
+                               asp-route-id="@recipe.Id"
+                               class="btn btn-info btn-sm">
+
+                                Details
+
+                            </a>
+
+                            <a asp-action="Edit"
+                               asp-route-id="@recipe.Id"
+                               class="btn btn-warning btn-sm">
+
+                                Edit
+
+                            </a>
+
+                            <a asp-action="Delete"
+                               asp-route-id="@recipe.Id"
+                               class="btn btn-danger btn-sm">
+
+                                Delete
+
+                            </a>
+
+                        </td>
+
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+
+                    <td colspan="8"
+                        class="text-center">
+
+                        No Recipes Available
+
+                    </td>
+
+                </tr>
+            }
+
+        </tbody>
+
+    </table>
+
+</div>

@@ -11,92 +11,108 @@ namespace Application.Services.Implementation
         private readonly IFavouriteRecipeRepository _favouriteRecipeRepository;
         private readonly IRecipeRepository _recipeRepository;
         private readonly ICustomerRepository _customerRepository;
+        private readonly IRecipeLikeRepository _recipeLikeRepository;
         private readonly IUnitOfWork _unitOfWork;
 
         public FavouriteRecipeService(
             IFavouriteRecipeRepository favouriteRecipeRepository,
             IRecipeRepository recipeRepository,
             ICustomerRepository customerRepository,
+            IRecipeLikeRepository recipeLikeRepository,
             IUnitOfWork unitOfWork)
         {
             _favouriteRecipeRepository = favouriteRecipeRepository;
             _recipeRepository = recipeRepository;
             _customerRepository = customerRepository;
+            _recipeLikeRepository = recipeLikeRepository;
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<BaseResponse<CreateFavouriteRecipeResponseModel>> AddFavouriteRecipeAsync(CreateFavouriteRecipeRequestModel request, Guid customerId)              
+
+        public async Task<BaseResponse<FavouriteRecipeResponseModel>>
+            AddFavouriteRecipeAsync(
+                CreateFavouriteRecipeRequestModel request,
+                Guid customerId)
         {
-            var customer = await _customerRepository.GetByIdAsync(customerId);
+            var customer =
+                await _customerRepository.GetByIdAsync(customerId);
 
             if (customer == null)
             {
-                return BaseResponse<CreateFavouriteRecipeResponseModel>
+                return BaseResponse<FavouriteRecipeResponseModel>
                     .Failure("Customer not found.");
             }
 
-            var recipe = await _recipeRepository.GetByIdAsync(request.RecipeId);
+
+            var recipe =
+                await _recipeRepository.GetByIdAsync(request.RecipeId);
 
             if (recipe == null)
             {
-                return BaseResponse<CreateFavouriteRecipeResponseModel>
+                return BaseResponse<FavouriteRecipeResponseModel>
                     .Failure("Recipe not found.");
             }
 
-            var exist = await _favouriteRecipeRepository.IsExist(customer.Id, request.RecipeId);
 
-            if (exist == true)
+            var exists =
+                await _favouriteRecipeRepository.IsExist(
+                    customerId,
+                    request.RecipeId);
+
+            if (exists)
             {
-                return BaseResponse<CreateFavouriteRecipeResponseModel>
-                    .Failure("Recipe already added to favourites.");
+                return BaseResponse<FavouriteRecipeResponseModel>
+                    .Failure(
+                        "Recipe already added to favourites.");
             }
+
 
             var favourite = new Favourite
             {
                 Id = Guid.NewGuid(),
-                CustomerId = customer.Id,
+                CustomerId = customerId,
                 RecipeId = request.RecipeId
             };
 
-            await _favouriteRecipeRepository.AddFavouriteRecipeAsync(favourite);
+
+            await _favouriteRecipeRepository
+                .AddFavouriteRecipeAsync(favourite);
 
             await _unitOfWork.SaveChangesAsync();
 
-            var response = favourite.Adapt<CreateFavouriteRecipeResponseModel>();
 
-            return BaseResponse<CreateFavouriteRecipeResponseModel>
-                .Success("Recipe added to favourites.", response);
-        }
-
-        public async Task<BaseResponse<CreateFavouriteRecipeResponseModel>> GetFavouriteRecipeByIdAsync(Guid id)
-        {
-            var favourite = await _favouriteRecipeRepository.GetFavouriteRecipeByIdAsync(id);
-
-            if (favourite == null)
+            var response = new FavouriteRecipeResponseModel
             {
-                return BaseResponse<CreateFavouriteRecipeResponseModel>
-                    .Failure("Favourite recipe not found.");
-            }
+                Id = favourite.Id,
+                RecipeId = recipe.Id,
+                RecipeName = recipe.Name,
+                Description = recipe.Description,
+                ImageUrl = recipe.ImageUrl,
+                PreparationTimeMinutes =
+                    recipe.PreparationTimeMinutes,
+                CookingTimeMinutes =
+                    recipe.CookingTimeMinutes,
+                Servings = recipe.Servings,
+                Difficulty = recipe.Difficulty,
+                LikeCount =
+                    await _recipeLikeRepository
+                        .GetLikeCountAsync(recipe.Id)
+            };
 
-            var response = favourite.Adapt<CreateFavouriteRecipeResponseModel>();
 
-            return BaseResponse<CreateFavouriteRecipeResponseModel>
-                .Success("Favourite recipe retrieved successfully.", response);
+            return BaseResponse<FavouriteRecipeResponseModel>
+                .Success(
+                    "Recipe added to favourites.",
+                    response);
         }
 
-        public async Task<BaseResponse<ICollection<CreateFavouriteRecipeResponseModel>>> GetAllFavouriteRecipeAsync()
+
+        public async Task<BaseResponse<bool>>
+        RemoveFavouriteRecipeAsync(Guid id, Guid customerId)
         {
-            var favourites = await _favouriteRecipeRepository.GetAllFavouriteRecipeAsync();
-
-            var response = favourites.Adapt<ICollection<CreateFavouriteRecipeResponseModel>>();
-
-            return BaseResponse<ICollection<CreateFavouriteRecipeResponseModel>>
-                .Success("Favourite recipes retrieved successfully.", response);
-        }
-
-        public async Task<BaseResponse<bool>> RemoveFavouriteRecipeAsync(Guid id)
-        {
-            var favourite = await _favouriteRecipeRepository.GetFavouriteRecipeByIdAsync(id);
+            var favourite =
+                await _favouriteRecipeRepository
+                    .GetFavouriteRecipeByIdAsync(id);
 
             if (favourite == null)
             {
@@ -104,12 +120,64 @@ namespace Application.Services.Implementation
                     .Failure("Favourite recipe not found.");
             }
 
+            if (favourite.CustomerId != customerId)
+            {
+                return BaseResponse<bool>
+                    .Failure("You can only remove your own favourite recipes.");
+            }
+
             _favouriteRecipeRepository.DeleteFavouriteRecipe(favourite);
 
             await _unitOfWork.SaveChangesAsync();
 
             return BaseResponse<bool>
-                .Success("Favourite recipe deleted successfully.", true);
+                .Success(
+                    "Favourite recipe removed successfully.",
+                    true);
+        }
+
+        public async Task<BaseResponse<ICollection<FavouriteRecipeViewModel>>>
+    GetFavouriteRecipesByCustomerAsync(Guid customerId)
+        {
+            var customer = await _customerRepository.GetByIdAsync(customerId);
+
+            if (customer == null)
+            {
+                return BaseResponse<ICollection<FavouriteRecipeViewModel>>
+                    .Failure("Customer not found.");
+            }
+
+            var favourites =
+                await _favouriteRecipeRepository
+                    .GetFavouriteRecipeByCustomerIdAsync(customerId);
+
+            var response = favourites.Select(x => new FavouriteRecipeViewModel
+            {
+                Id = x.Id,
+                RecipeId = x.RecipeId,
+
+                RecipeName = x.Recipe.Name,
+                Description = x.Recipe.Description,
+                ImageUrl = x.Recipe.ImageUrl,
+
+                CategoryName = x.Recipe.Category?.Name ?? "Unknown",
+
+                Difficulty = x.Recipe.Difficulty,
+
+                PreparationTimeMinutes =
+                    x.Recipe.PreparationTimeMinutes,
+
+                CookingTimeMinutes =
+                    x.Recipe.CookingTimeMinutes,
+
+                Servings = x.Recipe.Servings
+
+            }).ToList();
+
+            return BaseResponse<ICollection<FavouriteRecipeViewModel>>
+                .Success(
+                    "Favourite recipes retrieved successfully.",
+                    response);
         }
     }
 }

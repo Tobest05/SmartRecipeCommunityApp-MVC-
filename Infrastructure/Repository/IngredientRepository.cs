@@ -26,6 +26,13 @@ public class IngredientRepository : IIngredientRepository
             .FirstOrDefaultAsync(x => x.Id == id);
     }
 
+    public async Task<ICollection<Ingredient>> GetIngredientByRecipeIdAsync(Guid recipeId)
+    {
+        return await _context.Ingredient
+            .Where(x => x.RecipeId == recipeId)
+            .ToListAsync();
+    }
+
     public async Task<bool> IsExist(Guid recipeId, string name)
     {
         return await _context.Ingredient

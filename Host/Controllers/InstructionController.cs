@@ -15,14 +15,19 @@ namespace Host.Controllers
             _instructionService = instructionService;
         }
 
-        
         public async Task<IActionResult> Index()
         {
             var response = await _instructionService.GetAllInstructionAsync();
+
+            if (!response.Status)
+            {
+                ViewBag.Message = response.Message;
+                return View(new List<CreateInstructionResponseModel>());
+            }
+
             return View(response.Data);
         }
 
-       
         public async Task<IActionResult> Details(Guid id)
         {
             var response = await _instructionService.GetInstructionByIdAsync(id);
@@ -33,16 +38,24 @@ namespace Host.Controllers
             return View(response.Data);
         }
 
-       
-        public IActionResult Create()
+        [HttpGet]
+        public IActionResult Create(Guid recipeId)
         {
-            return View();
+            if (recipeId == Guid.Empty)
+                return BadRequest();
+
+            var model = new CreateInstructionRequestModel
+            {
+                RecipeId = recipeId
+            };
+
+            return View(model);
         }
 
-       
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(CreateInstructionRequestModel model)
+        public async Task<IActionResult> Create(
+            CreateInstructionRequestModel model)
         {
             if (!ModelState.IsValid)
                 return View(model);
@@ -55,18 +68,19 @@ namespace Host.Controllers
                 return View(model);
             }
 
-            return RedirectToAction(nameof(Index));
+            
+            return RedirectToAction("Details","Recipe",new { id = model.RecipeId });
         }
 
-        
+        [HttpGet]
         public async Task<IActionResult> Edit(Guid id)
         {
             var response = await _instructionService.GetInstructionByIdAsync(id);
 
-            if (!response.Status)
+            if (!response.Status || response.Data == null)
                 return NotFound();
 
-            var instruction = response.Data!;
+            var instruction = response.Data;
 
             var model = new UpdateInstructionRequestModel
             {
@@ -79,7 +93,6 @@ namespace Host.Controllers
             return View(model);
         }
 
-        
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(UpdateInstructionRequestModel model)
@@ -95,13 +108,14 @@ namespace Host.Controllers
                 return View(model);
             }
 
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Details","Recipe",new { id = model.RecipeId });
         }
 
-        
+        [HttpGet]
         public async Task<IActionResult> Delete(Guid id)
         {
-            var response = await _instructionService.GetInstructionByIdAsync(id);
+            var response =
+                await _instructionService.GetInstructionByIdAsync(id);
 
             if (!response.Status)
                 return NotFound();
@@ -109,14 +123,13 @@ namespace Host.Controllers
             return View(response.Data);
         }
 
-        
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(Guid id)
+        public async Task<IActionResult> DeleteConfirmed(Guid id,Guid recipeId)
         {
             await _instructionService.DeleteInstructionAsync(id);
 
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Details","Recipe",new { id = recipeId });
         }
     }
 }

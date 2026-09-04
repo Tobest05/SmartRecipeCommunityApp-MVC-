@@ -1,5 +1,101 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model Application.Dto.UpdateCustomerRequest
+
 @{
+    ViewData["Title"] = "Edit Customer";
+    Layout = "_CustomerLayout";
+}
+
+<div class="container mt-5">
+
+    <div class="card shadow">
+
+        <div class="card-header bg-warning text-dark">
+            <h3>Edit Customer</h3>
+        </div>
+
+        <div class="card-body">
+
+            <form asp-action="Edit" method="post" enctype="multipart/form-data">
+
+                <input asp-for="Id" type="hidden" />
+
+                <div class="mb-3">
+
+                    <label asp-for="FirstName" class="form-label"></label>
+
+                    <input asp-for="FirstName" class="form-control" />
+
+                    <span asp-validation-for="FirstName" class="text-danger"></span>
+
+                </div>
+
+                <div class="mb-3">
+
+                    <label asp-for="LastName" class="form-label"></label>
+
+                    <input asp-for="LastName" class="form-control" />
+
+                    <span asp-validation-for="LastName" class="text-danger"></span>
+
+                </div>
+
+                <div class="mb-3">
+
+                    <label class="form-label">Current Profile Image</label>
+
+                    <br />
+
+                    @if (!string.IsNullOrEmpty(Model.ExistingImageUrl))
+                    {
+                        <img src="@Model.ExistingImageUrl"
+                             width="150"
+                             class="img-thumbnail mb-3" />
+                    }
+                    else
+                    {
+                        <p class="text-muted">No profile image uploaded.</p>
+                    }
+
+                </div>
+
+                <div class="mb-3">
+
+                    <label asp-for="ProfileImage" class="form-label"></label>
+
+                    <input asp-for="ProfileImage" type="file" class="form-control" />
+
+                    <span asp-validation-for="ProfileImage" class="text-danger"></span>
+
+                </div>
+
+                <div class="mb-3">
+
+                    <label asp-for="Bio" class="form-label"></label>
+
+                    <textarea asp-for="Bio"
+                              rows="4"
+                              class="form-control"></textarea>
+
+                    <span asp-validation-for="Bio" class="text-danger"></span>
+
+                </div>
+
+                <button type="submit" class="btn btn-warning">
+                    Update
+                </button>
+
+                <a asp-action="Index" class="btn btn-secondary">
+                    Back
+                </a>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
 }

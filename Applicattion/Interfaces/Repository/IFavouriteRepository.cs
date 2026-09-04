@@ -8,9 +8,14 @@ namespace Application.Interfaces.Repository
     public interface IFavouriteRecipeRepository
     {
         Task AddFavouriteRecipeAsync(Favourite favouriteRecipe);
+
         Task<Favourite?> GetFavouriteRecipeByIdAsync(Guid id);
-        Task<bool> IsExist(Guid customeerId, Guid recipeId);
-        Task<ICollection<Favourite>> GetAllFavouriteRecipeAsync();
+
+        Task<ICollection<Favourite>> GetFavouriteRecipeByCustomerIdAsync(
+            Guid customerId);
+
+        Task<bool> IsExist(Guid customerId, Guid recipeId);
+
         void DeleteFavouriteRecipe(Favourite favouriteRecipe);
     }
 }

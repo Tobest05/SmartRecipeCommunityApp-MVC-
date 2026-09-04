@@ -12,6 +12,11 @@ namespace Application.Services.Implementation
         private readonly IUserRepository _userRepository;
         private readonly IRoleRepository _roleRepository;
         private readonly IUserRoleRepository _userRoleRepository;
+        private readonly IRecipeRepository _recipeRepository;
+        private readonly IFavouriteRecipeRepository _favouriteRecipeRepository;
+        private readonly ICommentRepository _commentRepository;
+        private readonly IRatingRepository _ratingRepository;
+        private readonly IImageService _imageService;
         private readonly IUnitOfWork _unitOfWork;
 
         public CustomerService(
@@ -19,12 +24,22 @@ namespace Application.Services.Implementation
             IUserRepository userRepository,
             IRoleRepository roleRepository,
             IUserRoleRepository userRoleRepository,
+            IRecipeRepository recipeRepository,
+            IFavouriteRecipeRepository favouriteRecipeRepository,
+            ICommentRepository commentRepository,
+            IRatingRepository ratingRepository,
+            IImageService imageService, 
             IUnitOfWork unitOfWork)
         {
             _customerRepository = customerRepository;
             _userRepository = userRepository;
             _roleRepository = roleRepository;
             _userRoleRepository = userRoleRepository;
+            _recipeRepository = recipeRepository;
+            _favouriteRecipeRepository = favouriteRecipeRepository;
+            _commentRepository = commentRepository;
+            _ratingRepository = ratingRepository;
+            _imageService = imageService;
             _unitOfWork = unitOfWork;
         }
 
@@ -32,7 +47,7 @@ namespace Application.Services.Implementation
         {
             var exist = await _userRepository.IsExistAsync(request.Email);
 
-            if (exist == true)
+            if (exist)
             {
                 return BaseResponse<RegisterCustomerResponse>
                     .Failure("Email already exists.");
@@ -55,11 +70,18 @@ namespace Application.Services.Implementation
 
             await _userRepository.AddUserAsync(user);
 
+            string imagePath = "";
+            if (request.ProfileImage !=null)
+            {
+                imagePath = await _imageService.UploadImageAsync(request.ProfileImage, "customers");
+            }
+
             var customer = request.Adapt<Customer>();
 
             customer.Id = Guid.NewGuid();
             customer.UserId = user.Id;
             customer.Email = user.Email;
+            customer.ProfileImageUrl = imagePath;
 
             await _customerRepository.AddCustomerAsync(customer);
 
@@ -79,7 +101,6 @@ namespace Application.Services.Implementation
             return BaseResponse<RegisterCustomerResponse>
                 .Success("Registration Successful.", response);
         }
-
         public async Task<BaseResponse<RegisterCustomerResponse>> GetCustomerByIdAsync(Guid id)
         {
             var customer = await _customerRepository.GetByIdAsync(id);
@@ -118,6 +139,14 @@ namespace Application.Services.Implementation
 
             request.Adapt(customer);
 
+            
+            if (request.ProfileImage != null)
+            {
+                customer.ProfileImageUrl = await _imageService.UploadImageAsync(
+                    request.ProfileImage,
+                    "customers");
+            }
+
             _customerRepository.UpdateCustomer(customer);
 
             await _unitOfWork.SaveChangesAsync();
@@ -127,7 +156,6 @@ namespace Application.Services.Implementation
             return BaseResponse<UpdateCustomerResponse>
                 .Success("Customer updated successfully.", response);
         }
-
         public async Task<BaseResponse<bool>> DeleteCustomerAsync(Guid id)
         {
             var customer = await _customerRepository.GetByIdAsync(id);
@@ -145,6 +173,66 @@ namespace Application.Services.Implementation
             return BaseResponse<bool>
                 .Success("Customer deleted successfully.", true);
         }
+        public async Task<BaseResponse<CustomerDashboardViewModel>> GetDashboardAsync(Guid userId)
+        {
+            var customer = await _customerRepository.GetByUserIdAsync(userId);
+
+            if (customer == null)
+            {
+                return BaseResponse<CustomerDashboardViewModel>
+                    .Failure("Customer not found.");
+            }
+
+            var recipes = await _recipeRepository
+                .GetRecipeByCustomerIdAsync(customer.Id);
+
+            var favourites = await _favouriteRecipeRepository
+                .GetFavouriteRecipeByCustomerIdAsync(customer.Id);
+
+            var comments = await _commentRepository
+                .GetRecipeCommentByCustomerIdAsync(customer.Id);
+
+            var averageRating = await _ratingRepository
+                .GetAverageCustomerRatingByIdAsync(customer.Id);
+
+            var dashboard = new CustomerDashboardViewModel
+            {
+                FullName = $"{customer.FirstName} {customer.LastName}",
+
+                ProfileImageUrl = customer.ProfileImageUrl,
+
+                TotalRecipes = recipes.Count,
+
+                TotalFavourites = favourites.Count,
+
+                TotalComments = comments.Count,
+
+                AverageRating = averageRating ?? 0,
+
+                RecentRecipes = recipes
+                    .OrderByDescending(x => x.CreatedBy)
+                    .Take(5)
+                    .Adapt<ICollection<CreateRecipeResponseModel>>()
+            };
+
+            return BaseResponse<CustomerDashboardViewModel>
+                .Success("Dashboard loaded successfully.", dashboard);
+        }
+
+        public async Task<BaseResponse<RegisterCustomerResponse>> GetCustomerByUserIdAsync(Guid userId)
+        {
+            var customer = await _customerRepository.GetByUserIdAsync(userId);
+
+            if (customer == null)
+            {
+                return BaseResponse<RegisterCustomerResponse>
+                    .Failure("Customer not found.");
+            }
+
+            var response = customer.Adapt<RegisterCustomerResponse>();
+
+            return BaseResponse<RegisterCustomerResponse>
+                .Success("Customer retrieved successfully.", response);
+        }
     }
 }
-

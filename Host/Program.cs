@@ -5,6 +5,7 @@ using Application.Services.Implementation;
 using Infrastructure.Context;
 using Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
+using Infrastructure.Services;
 
 namespace Presentation_Layer
 {
@@ -14,9 +15,7 @@ namespace Presentation_Layer
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            builder.Services.AddDbContext<SmartRecipeContext>(options =>
-                options.UseMySQL(
-                    builder.Configuration.GetConnectionString("MyConnectionString")!));
+            builder.Services.AddDbContext<SmartRecipeContext>(options => options.UseMySQL(builder.Configuration.GetConnectionString("MyConnectionString")!));
             builder.Services.AddAuthorization();
             builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
@@ -45,6 +44,7 @@ namespace Presentation_Layer
             builder.Services.AddScoped<IInstructionRepository, InstructionRepository>();
             builder.Services.AddScoped<IFavouriteRecipeRepository, FavouriteRecipeRepository>();
             builder.Services.AddScoped<ICommentRepository, RecipeCommentRepository>();
+            builder.Services.AddScoped<IRecipeLikeRepository, RecipeLikeRepository>();
             builder.Services.AddScoped<IRatingRepository, RecipeRatingRepository>();
 
             builder.Services.AddScoped<IUserService, UserService>();
@@ -54,8 +54,11 @@ namespace Presentation_Layer
             builder.Services.AddScoped<IIngredientService, IngredientService>();
             builder.Services.AddScoped<IInstructionService, InstructionService>();
             builder.Services.AddScoped<IFavouriteService, FavouriteRecipeService>();
-            builder.Services.AddScoped<ICommentService, RecipeCommentService>();
+            builder.Services.AddScoped<ICommentService, CommentService>();
             builder.Services.AddScoped<IRatingService, RecipeRatingService>();
+            builder.Services.AddScoped<IRecipeLikeService, RecipeLikeService>();
+            builder.Services.AddScoped<IAdminService, AdminService>();
+            builder.Services.AddScoped<IImageService,ImageService>();
 
             var app = builder.Build();
 

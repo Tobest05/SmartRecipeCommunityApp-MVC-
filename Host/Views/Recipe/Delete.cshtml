@@ -1,0 +1,113 @@
+﻿@model Application.Dto.CreateRecipeResponseModel
+
+@{
+    ViewData["Title"] = "Delete Recipe";
+}
+
+<div class="container mt-5">
+
+    <div class="card border-danger shadow">
+
+        <div class="card-header bg-danger text-white">
+
+            <h3>Delete Recipe</h3>
+
+        </div>
+
+        <div class="card-body">
+
+            <div class="text-center">
+
+                <img src="@Model.ImageUrl"
+                     class="img-fluid rounded shadow mb-3"
+                     style="max-height:250px;" />
+
+                <h3>@Model.Name</h3>
+
+            </div>
+
+            <hr />
+
+            <table class="table table-bordered">
+
+                <tr>
+
+                    <th>Description</th>
+
+                    <td>@Model.Description</td>
+
+                </tr>
+
+                <tr>
+
+                    <th>Preparation Time</th>
+
+                    <td>@Model.PreparationTimeMinutes Minutes</td>
+
+                </tr>
+
+                <tr>
+
+                    <th>Cooking Time</th>
+
+                    <td>@Model.CookingTimeMinutes Minutes</td>
+
+                </tr>
+
+                <tr>
+
+                    <th>Serving</th>
+
+                    <td>@Model.Servings</td>
+
+                </tr>
+
+                <tr>
+
+                    <th>Difficulty</th>
+
+                    <td>@Model.Difficulty</td>
+
+                </tr>
+
+                <tr>
+
+                    <th>Status</th>
+
+                    <td>@Model.Status</td>
+
+                </tr>
+
+            </table>
+
+            <h5 class="text-danger">
+
+                Are you sure you want to delete this recipe?
+
+            </h5>
+
+            <form asp-action="Delete" method="post">
+
+                <input asp-for="Id" hidden />
+
+                <button type="submit"
+                        class="btn btn-danger">
+
+                    Delete
+
+                </button>
+
+                <a asp-action="Index"
+                   class="btn btn-secondary">
+
+                    Cancel
+
+                </a>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>

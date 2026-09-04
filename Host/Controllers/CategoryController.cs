@@ -38,12 +38,23 @@ namespace Host.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(CreateCategoryRequestModel model)
+        public async Task<IActionResult> Create(CreateCategoryRequestModel model, Guid userId)
         {
             if (!ModelState.IsValid)
-                return View(model);
+            {
+                foreach (var item in ModelState)
+                {
+                    foreach (var error in item.Value.Errors)
+                    {
+                        Console.WriteLine(
+                            $"{item.Key}: {error.ErrorMessage}");
+                    }
+                }
 
-            var response = await _categoryService.AddCategoryAsync(model);
+                return View(model);
+            }
+
+            var response = await _categoryService.AddCategoryAsync(model, userId);
 
             if (!response.Status)
             {
