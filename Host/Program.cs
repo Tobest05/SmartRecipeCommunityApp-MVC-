@@ -15,9 +15,7 @@ namespace Presentation_Layer
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            builder.Services.AddDbContext<SmartRecipeContext>(options =>
-                options.UseMySQL(
-                    builder.Configuration.GetConnectionString("MyConnectionString")!));
+            builder.Services.AddDbContext<SmartRecipeContext>(options => options.UseMySQL(builder.Configuration.GetConnectionString("MyConnectionString")!));
             builder.Services.AddAuthorization();
             builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
